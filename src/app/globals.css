@@ -1,26 +1,203 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@heroui/styles";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
+  --font-script: var(--font-caveat);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #fcf8fa;
+  --foreground: #101233;
+  --card: #ffffff;
+  --card-foreground: #101233;
+  --popover: #ffffff;
+  --popover-foreground: #101233;
+  --primary: #ff3d71;
+  --primary-foreground: #ffffff;
+  --secondary: #f1edf5;
+  --secondary-foreground: #101233;
+  --muted: #f1eef2;
+  --muted-foreground: #5d627b;
+  --accent: #ffe9f0;
+  --accent-foreground: #101233;
+  --destructive: #e5484d;
+  --border: #10123314;
+  --input: #1012331a;
+  --ring: #ff3d71;
+  --chart-1: #ff3d71;
+  --chart-2: #2dd4bf;
+  --chart-3: #3b82f6;
+  --chart-4: #8b5cf6;
+  --chart-5: #f59e0b;
+  --radius: 0.75rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #101233;
+  --sidebar-primary: #ff3d71;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1edf5;
+  --sidebar-accent-foreground: #101233;
+  --sidebar-border: #10123314;
+  --sidebar-ring: #ff3d71;
+
+  /* HeroUI theme override (KnitCivic palette) */
+  --accent: #ff3d71;
+  --accent-hover: #e92d61;
+  --accent-soft: #ff3d711a;
+  --accent-soft-hover: #ff3d7126;
+  --accent-soft-foreground: #e42d66;
+  --accent-foreground: #ffffff;
+  --surface: #ffffff;
+  --surface-foreground: #101233;
+  --surface-secondary: #f1edf5;
+  --surface-secondary-foreground: #101233;
+  --surface-tertiary: #e9e6ee;
+  --surface-tertiary-foreground: #101233;
+  --overlay: #ffffff;
+  --overlay-foreground: #101233;
+  --default: #f1eef2;
+  --default-hover: #e9e6ee;
+  --default-foreground: #101233;
+  --muted: #5d627b;
+  --border: #10123314;
+  --separator: #1012330f;
+  --focus: #ff3d71;
+  --link: #e42d66;
+  --danger: #e5484d;
+  --success: #17b26a;
+  --backdrop: #1012334d;
+  --field-background: #ffffff;
+  --field-foreground: #101233;
+  --field-placeholder: #9aa0b8;
+  --field-border: transparent;
+  --field-border-hover: #10123314;
+  --field-border-focus: #ff3d71;
+}
+
+.dark {
+  --background: #05070f;
+  --foreground: #f3f5fb;
+  --card: #0b0e20;
+  --card-foreground: #f3f5fb;
+  --popover: #0d1228;
+  --popover-foreground: #f3f5fb;
+  --primary: #ff3d71;
+  --primary-foreground: #ffffff;
+  --secondary: #12162f;
+  --secondary-foreground: #f3f5fb;
+  --muted: #12162f;
+  --muted-foreground: #98a0bf;
+  --accent: #12162f;
+  --accent-foreground: #f3f5fb;
+  --destructive: #ff5252;
+  --border: #ffffff14;
+  --input: #ffffff1a;
+  --ring: #ff3d71;
+  --chart-1: #ff3d71;
+  --chart-2: #2dd4bf;
+  --chart-3: #3b82f6;
+  --chart-4: #8b5cf6;
+  --chart-5: #f59e0b;
+  --radius: 0.75rem;
+  --sidebar: #0b0e20;
+  --sidebar-foreground: #f3f5fb;
+  --sidebar-primary: #ff3d71;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #12162f;
+  --sidebar-accent-foreground: #f3f5fb;
+  --sidebar-border: #ffffff14;
+  --sidebar-ring: #ff3d71;
+
+  /* HeroUI theme override (KnitCivic palette) */
+  --accent: #ff3d71;
+  --accent-hover: #ff5586;
+  --accent-soft: #ff3d7129;
+  --accent-soft-hover: #ff3d713d;
+  --accent-soft-foreground: #ff9db9;
+  --accent-foreground: #ffffff;
+  --surface: #0b0e20;
+  --surface-foreground: #f3f5fb;
+  --surface-secondary: #10142b;
+  --surface-secondary-foreground: #f3f5fb;
+  --surface-tertiary: #12172f;
+  --surface-tertiary-foreground: #f3f5fb;
+  --overlay: #0d1228;
+  --overlay-foreground: #f3f5fb;
+  --default: #12162f;
+  --default-hover: #171c3b;
+  --default-foreground: #f3f5fb;
+  --muted: #98a0bf;
+  --border: #ffffff14;
+  --separator: #ffffff0f;
+  --focus: #ff3d71;
+  --link: #ff9db9;
+  --danger: #ff5252;
+  --success: #2dd4bf;
+  --backdrop: #02040eb3;
+  --field-background: #0d1228;
+  --field-foreground: #f3f5fb;
+  --field-placeholder: #6a7191;
+  --field-border: transparent;
+  --field-border-hover: #ffffff1f;
+  --field-border-focus: #ff3d71;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::selection {
+  background-color: color-mix(in oklab, var(--primary) 35%, transparent);
 }

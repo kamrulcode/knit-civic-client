@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  images: {
+    // All placeholders in public/ are trusted first-party SVG files.
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "inline",
+  },
 };
 
 export default nextConfig;

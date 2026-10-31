@@ -1,0 +1,72 @@
+"use client";
+
+import Link from "next/link";
+import { HeartPulse } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { UserMenu } from "@/components/user-menu";
+import Image from "next/image";
+
+export function Logo() {
+  return (
+    <Link href="/" className="flex items-center gap-2.5">
+      <span className="relative flex size-9 items-center justify-center  ">
+        <Image
+          src="/logoL.svg"
+          fill
+          alt=""
+          className="object-contain dark:hidden"
+        />
+        <Image
+          src="/logoD.svg"
+          fill
+          alt=""
+          className="hidden object-contain dark:block"
+        />
+      </span>
+
+      <span className="text-lg font-semibold tracking-tight">
+        <p>
+          Knit<span className="text-primary">Civic</span>
+        </p>
+        <p className="text-xs">Weaving communities, sparking change.</p>
+      </span>
+    </Link>
+  );
+}
+
+export function Navbar() {
+  // TODO: replace with real auth state (e.g. from a session/context provider).
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Logo />
+
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 md:block">
+          <Link
+            href="/events/upcomingevents"
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            Upcoming Events
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-3">
+          {/* Dark / light switch */}
+          <ThemeToggle />
+
+          {/* {user ? (
+            // Logged in → avatar dropdown (name, email, links, logout)
+            <UserMenu user={user} />
+          ) : (
+            
+          )} */}
+          <Button size="sm" className="rounded-full px-6">
+            Login
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
