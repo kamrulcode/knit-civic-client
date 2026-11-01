@@ -1,16 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Heart, MapPin, Users } from "lucide-react";
-import {
-  categoryById,
-  fetchEventById,
-  getEventCategoryId,
-} from "../upcomingevents/data";
-import { Button } from "@/components/ui/button";
 import JoinEventButton from "./JoinEventButton";
 
 type EventDetailsPageProps = {
   params: Promise<{ id: string }>;
+};
+
+type Event = {
+  _id: string;
+  title: string;
+  description: string;
+  type: string;
+  location: string;
+  image: string;
+  date: string;
+  time?: string;
+  joined?: number;
+  name?: string;
 };
 
 function formatDate(date: string) {
@@ -28,18 +35,24 @@ export default async function EventDetailsPage({
   params,
 }: EventDetailsPageProps) {
   const { id } = await params;
-  const event = await fetchEventById(id);
+  const response = await fetch("http://localhost:8000/events", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to load events (HTTP ${response.status}).`);
+  }
+
+  const events: Event[] = await response.json();
+  const event = events.find((item) => item._id === id);
 
   if (!event) notFound();
-
-  const categoryId = getEventCategoryId(event.type);
-  const category = categoryId ? categoryById.get(categoryId) : undefined;
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <article className="mx-auto w-full max-w-6xl">
         <Link
-          href="/events/manage-event"
+          href="/events/upcomingevents"
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
@@ -54,13 +67,9 @@ export default async function EventDetailsPage({
               fetchPriority="high"
               className="absolute inset-0 size-full object-cover"
             />
-            {category && (
-              <span
-                className={`absolute left-0 top-0 rounded-br-2xl px-5 py-3 text-sm font-semibold ${category.badgeClass}`}
-              >
-                {category.label}
-              </span>
-            )}
+            <span className="absolute left-0 top-0 rounded-br-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+              {event.type}
+            </span>
           </div>
 
           <div className="flex flex-col p-6 sm:p-8 lg:p-10">
@@ -118,7 +127,7 @@ export default async function EventDetailsPage({
               )}
             </dl>
 
-            <JoinEventButton event={event} />
+            <JoinEventButton event={{ ...event, id: event._id }} />
           </div>
         </div>
       </article>

@@ -11,12 +11,11 @@ import {
   Info,
   LockKeyhole,
   Leaf,
-  X,
   ArrowLeft,
 } from "lucide-react";
 import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "@/components/ui/toast";
+import { toast } from "sonner";
 
 const eventTypes = [
   "Cleanup",
@@ -86,6 +85,13 @@ export default function CreateEventPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Check if user is logged in
+    if (!currentUser?.email) {
+      toast.error("Please sign in before creating an event.");
+      router.push("/login?callbackURL=/events/create-event");
+      return;
+    }
+
     if (
       !formData.title.trim() ||
       !formData.description.trim() ||
@@ -94,68 +100,60 @@ export default function CreateEventPage() {
       !formData.image.trim() ||
       !formData.date
     ) {
-      toast.add({
-        type: "error",
-        description: "Please fill in all required fields.",
-      });
+      toast.error("Please fill in all required fields.");
       return;
     }
 
     if (!/^https?:\/\/.+/i.test(formData.image)) {
-      toast.add({
-        type: "error",
-        description: "Please enter a valid thumbnail image URL.",
-      });
-      return;
-    }
-
-    if (!formData.date) {
-      toast.add({
-        type: "error",
-        description: "Event date is required.",
-      });
+      toast.error("Please enter a valid thumbnail image URL (http/https).");
       return;
     }
 
     const selectedDate = new Date(`${formData.date}T00:00:00`);
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     if (isNaN(selectedDate.getTime()) || selectedDate <= today) {
-      toast.add({
-        type: "error",
-        description: "Invalid event date!",
-      });
-
+      toast.error("Please select a future event date.");
       return;
     }
 
     try {
       setLoading(true);
 
+      // Prepare complete beginner-friendly event payload
+      const eventPayload = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        type: formData.type,
+        location: formData.location.trim(),
+        image: formData.image.trim(),
+        date: formData.date,
+        name: currentUser.name || "Community Organizer",
+        email: currentUser.email,
+        profileImg: currentUser.image || "",
+        joined: 0,
+        createdAt: new Date().toISOString(),
+      };
+
       const response = await fetch("http://localhost:8000/create-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(eventPayload),
       });
 
-      if (!response.ok) throw new Error("Failed to create event");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to create event");
+      }
 
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      toast.add({
-        title: "success",
-        description: "Sunday, December 3 at 9:00 AM",
-      });
-      // Replace with your actual event details route.
-      router.push("/events/upcomingevents");
+      toast.success("Event created successfully!");
+      // Redirect user to their managed events page to see the newly created event
+      router.push("/events/manage-event");
     } catch (error) {
-      toast.add({
-        type: "error",
-        description:
-          error instanceof Error ? error.message : "Please try again.",
-      });
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong. Please try again.",
+      );
     } finally {
       setLoading(false);
     }

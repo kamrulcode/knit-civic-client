@@ -24,15 +24,32 @@ import { authClient } from "@/lib/auth-client";
 type Profile = {
   name: string;
   email: string;
-  image: string;
+  image?: string;
+  photoURL?: string;
+  phone?: string;
+  location?: string;
+  website?: string;
+  bio?: string;
 };
 
 export default function ProfilePage() {
   const { data } = authClient.useSession();
-  const initialProfile: Profile = data?.user;
+  const user = data?.user;
 
-  const [profile, setProfile] = useState(initialProfile);
-  const [editData, setEditData] = useState(initialProfile);
+  const [customProfile, setCustomProfile] = useState<Partial<Profile>>({});
+
+  const profile: Profile = {
+    name: customProfile.name ?? user?.name ?? "Community Member",
+    email: customProfile.email ?? user?.email ?? "",
+    image: customProfile.image ?? user?.image ?? "https://i.pravatar.cc/150?img=12",
+    photoURL: customProfile.photoURL ?? user?.image ?? "https://i.pravatar.cc/150?img=12",
+    phone: customProfile.phone ?? "",
+    location: customProfile.location ?? "",
+    website: customProfile.website ?? "",
+    bio: customProfile.bio ?? "",
+  };
+
+  const [editData, setEditData] = useState<Profile>(profile);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
@@ -56,7 +73,7 @@ export default function ProfilePage() {
       return;
     }
 
-    setProfile(editData);
+    setCustomProfile(editData);
     setIsEditing(false);
 
     toast.success("Profile updated successfully!", {
@@ -339,7 +356,7 @@ export default function ProfilePage() {
 
             <div className="mb-6 flex items-center gap-4">
               <img
-                src={editData.photoURL}
+                src={editData.photoURL || "https://i.pravatar.cc/150?img=12"}
                 alt={editData.name}
                 className="h-20 w-20 rounded-full border-2 border-primary object-cover"
               />
@@ -369,28 +386,28 @@ export default function ProfilePage() {
 
               <EditInput
                 label="Photo URL"
-                value={editData.photoURL}
+                value={editData.photoURL ?? ""}
                 onChange={(v) => updateField("photoURL", v)}
                 placeholder="https://example.com/photo.jpg"
               />
 
               <EditInput
                 label="Phone number"
-                value={editData.phone}
+                value={editData.phone ?? ""}
                 onChange={(v) => updateField("phone", v)}
                 placeholder="Enter phone number"
               />
 
               <EditInput
                 label="Location"
-                value={editData.location}
+                value={editData.location ?? ""}
                 onChange={(v) => updateField("location", v)}
                 placeholder="Your location"
               />
 
               <EditInput
                 label="Website"
-                value={editData.website}
+                value={editData.website ?? ""}
                 onChange={(v) => updateField("website", v)}
                 placeholder="Your website URL"
               />
@@ -400,7 +417,7 @@ export default function ProfilePage() {
                   About me
                 </label>
                 <textarea
-                  value={editData.bio}
+                  value={editData.bio ?? ""}
                   onChange={(event) => updateField("bio", event.target.value)}
                   rows={3}
                   placeholder="Tell us about yourself..."

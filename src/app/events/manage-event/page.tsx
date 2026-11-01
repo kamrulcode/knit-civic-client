@@ -18,7 +18,11 @@ import {
 import { toast } from "sonner";
 import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
-import { fetchEventsByEmail, getEventCategoryId, type Event } from "../upcomingevents/data";
+import {
+  fetchEventsByEmail,
+  getEventCategoryId,
+  type Event,
+} from "../upcomingevents/data";
 
 const categories = [
   "All Event Types",
@@ -71,8 +75,7 @@ export default function ManageEventsPage() {
   const userEmail = data?.user?.email;
   const requestKey = userEmail ? `${userEmail}:${retryCount}` : null;
   const isLoading = Boolean(userEmail && loadedRequest !== requestKey);
-  const currentLoadError =
-    loadedRequest === requestKey ? loadError : null;
+  const currentLoadError = loadedRequest === requestKey ? loadError : null;
 
   useEffect(() => {
     if (!userEmail) return;
@@ -93,7 +96,9 @@ export default function ManageEventsPage() {
       } catch (error) {
         if (!controller.signal.aborted) {
           setLoadError(
-            error instanceof Error ? error.message : "Unable to load your events.",
+            error instanceof Error
+              ? error.message
+              : "Unable to load your events.",
           );
           setLoadedRequest(key);
         }
@@ -165,18 +170,42 @@ export default function ManageEventsPage() {
   };
 
   // DELETE EVENT
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    if (!userEmail) {
+      toast.error("Please log in to manage your events.");
+      return;
+    }
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this event? This action cannot be undone.",
     );
-
     if (!confirmed) return;
 
-    setEvents((prev) => prev.filter((event) => event.id !== id));
+    try {
+      const res = await fetch(
+        `http://localhost:8000/events/${encodeURIComponent(userEmail)}/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
 
-    toast.success("Event deleted successfully!");
+      if (!res.ok) {
+        throw new Error("Failed to delete event.");
+      }
 
-    setCurrentPage(1);
+      const data = await res.json();
+
+      if (data.deletedCount > 0) {
+        toast.success("Event deleted successfully!");
+        // Immediately remove the deleted event from the UI list
+        setEvents((prev) => prev.filter((event) => event.id !== id));
+      } else {
+        toast.error("Event not found or already deleted.");
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast.error("Something went wrong while deleting the event.");
+    }
   };
 
   return (
@@ -262,7 +291,7 @@ export default function ManageEventsPage() {
           </div>
 
           <Link
-            href="/create-event"
+            href="/events/create-event"
             className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
           >
             <Plus size={18} />
@@ -286,7 +315,10 @@ export default function ManageEventsPage() {
             </button>
           </div>
         ) : isLoading ? (
-          <p role="status" className="rounded-2xl border border-border bg-card px-5 py-20 text-center text-sm text-muted-foreground">
+          <p
+            role="status"
+            className="rounded-2xl border border-border bg-card px-5 py-20 text-center text-sm text-muted-foreground"
+          >
             Loading your events...
           </p>
         ) : !userEmail ? (

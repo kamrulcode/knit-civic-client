@@ -129,9 +129,8 @@ function FilterDropdown({
                   onChange(o.value);
                   setOpen(false);
                 }}
-                className={`w-full px-4 py-2 text-left text-sm hover:bg-muted ${
-                  value === o.value ? "text-primary" : "text-foreground"
-                }`}
+                className={`w-full px-4 py-2 text-left text-sm hover:bg-muted ${value === o.value ? "text-primary" : "text-foreground"
+                  }`}
               >
                 {o.label}
               </button>
@@ -295,16 +294,16 @@ export default function UpcomingEventsPage() {
 
   const updateFilter =
     <T,>(setter: (v: T) => void) =>
-    (value: T) => {
-      setter(value);
-      setPage(1);
-    };
+      (value: T) => {
+        setter(value);
+        setPage(1);
+      };
 
   return (
     <div className="min-h-svh bg-background">
       <main className="h-full flex-1">
         {/* Hero band */}
-        <section className="relative mx-3 mt-3 overflow-hidden rounded-[2rem] bg-card">
+        <section className="relative mx-3 mt-3 overflow-hidden rounded-[2rem]">
           <div
             aria-hidden
             className="pointer-events-none absolute -left-24 top-0 size-72 rounded-full bg-primary/15 blur-[110px]"
@@ -495,11 +494,10 @@ export default function UpcomingEventsPage() {
                   type="button"
                   aria-current={n === safePage ? "page" : undefined}
                   onClick={() => setPage(n)}
-                  className={`flex size-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
-                    n === safePage
+                  className={`flex size-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${n === safePage
                       ? "bg-primary text-primary-foreground"
                       : "border border-border bg-card text-foreground hover:bg-muted"
-                  }`}
+                    }`}
                 >
                   {n}
                 </button>

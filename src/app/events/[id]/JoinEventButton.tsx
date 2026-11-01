@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -30,50 +30,51 @@ export default function JoinEventButton({ event }: Props) {
   const { data: session, isPending } = authClient.useSession();
 
   const [isJoined, setIsJoined] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const user = session?.user;
-
-  const checkRegistration = useCallback(async () => {
-    if (isPending) return;
-
-    if (!user?.email) {
-      setIsJoined(false);
-      setIsChecking(false);
-      return;
-    }
-
-    setIsChecking(true);
-
-    try {
-      const params = new URLSearchParams({
-        eventId: event.id,
-        userEmail: user.email,
-      });
-
-      const res = await fetch(
-        `${API_URL}/join-event/status?${params.toString()}`,
-        { cache: "no-store" },
-      );
-
-      if (!res.ok) {
-        throw new Error("Could not check registration status.");
-      }
-
-      const data = await res.json();
-      setIsJoined(data.joined === true);
-    } catch (error) {
-      console.error(error);
-      toast.error("Could not check your registration status.");
-    } finally {
-      setIsChecking(false);
-    }
-  }, [event.id, isPending, user?.email]);
+  const userEmail = user?.email;
+  const checkKey = userEmail ? `${event.id}:${userEmail}` : null;
+  const [checkedKey, setCheckedKey] = useState<string | null>(null);
 
   useEffect(() => {
+    if (isPending || !userEmail || !checkKey) return;
+
+    const email = userEmail;
+    const key = checkKey;
+    const controller = new AbortController();
+
+    async function checkRegistration() {
+      try {
+        const params = new URLSearchParams({
+          eventId: event.id,
+          userEmail: email,
+        });
+
+        const res = await fetch(
+          `${API_URL}/join-event/status?${params.toString()}`,
+          { cache: "no-store", signal: controller.signal },
+        );
+
+        if (!res.ok) {
+          throw new Error("Could not check registration status.");
+        }
+
+        const data = await res.json();
+        if (!controller.signal.aborted) setIsJoined(data.joined === true);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error(error);
+          toast.error("Could not check your registration status.");
+        }
+      } finally {
+        if (!controller.signal.aborted) setCheckedKey(key);
+      }
+    }
+
     void checkRegistration();
-  }, [checkRegistration]);
+    return () => controller.abort();
+  }, [checkKey, event.id, isPending, userEmail]);
 
   const handleJoinLeave = async () => {
     if (isPending || isSubmitting) return;
@@ -105,23 +106,18 @@ export default function JoinEventButton({ event }: Props) {
                 userEmail: user.email,
               }
             : {
-                event: {
-                  id: event.id,
-                  title: event.title,
-                  description: event.description,
-                  date: event.date,
-                  time: event.time ?? null,
-                  location: event.location,
-                  type: event.type,
-                  image: event.image,
-                  joined: event.joined ?? 0,
-                  organizer: event.name ?? null,
-                },
-                user: {
-                  id: user.id,
-                  name: user.name,
-                  email: user.email,
-                },
+                eventId: event.id,
+                title: event.title,
+                description: event.description,
+                date: event.date,
+                time: event.time ?? null,
+                location: event.location,
+                type: event.type,
+                image: event.image,
+                joined: true,
+                organizer: event.name ?? null,
+                name: user.name,
+                email: user.email,
               },
         ),
       });
@@ -158,6 +154,7 @@ export default function JoinEventButton({ event }: Props) {
     }
   };
 
+  const isChecking = Boolean(userEmail && checkedKey !== checkKey);
   const isLoading = isPending || isChecking || isSubmitting;
 
   return (

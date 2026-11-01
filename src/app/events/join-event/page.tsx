@@ -9,8 +9,6 @@ import {
   ArrowRight,
   CheckCircle2,
   CalendarHeart,
-  Leaf,
-  Heart,
   Sprout,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,9 +19,10 @@ import { toast } from "sonner";
 type EventStatus = "upcoming" | "completed";
 
 type JoinedEvent = {
-  id: string;
+  _id: string;
+  eventId?: string;
   title: string;
-  category: string;
+  type: string;
   date: string;
   time: string;
   location: string;
@@ -31,75 +30,6 @@ type JoinedEvent = {
   image: string;
   status: EventStatus;
 };
-
-const joinedEvents: JoinedEvent[] = [
-  {
-    id: "1",
-    title: "Tree Plantation Drive",
-    category: "Plantation",
-    date: "2026-11-15",
-    time: "9:00 AM",
-    location: "Central Park, Green City",
-    organizer: "Green Earth",
-    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900",
-    status: "upcoming",
-  },
-  {
-    id: "2",
-    title: "Winter Clothes Distribution",
-    category: "Donation",
-    date: "2026-11-18",
-    time: "10:00 AM",
-    location: "Helping Hands Shelter",
-    organizer: "Helping Hands",
-    image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?w=900",
-    status: "upcoming",
-  },
-  {
-    id: "3",
-    title: "Clean Our Neighborhood",
-    category: "Cleanup",
-    date: "2026-11-20",
-    time: "8:00 AM",
-    location: "Main Street, Green City",
-    organizer: "Green Earth",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=900",
-    status: "upcoming",
-  },
-  {
-    id: "4",
-    title: "Community Cleanup Day",
-    category: "Cleanup",
-    date: "2026-11-25",
-    time: "9:00 AM",
-    location: "City Park, Green City",
-    organizer: "Green Earth",
-    image: "https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=900",
-    status: "upcoming",
-  },
-  {
-    id: "5",
-    title: "Brighter Future Education Drive",
-    category: "Education",
-    date: "2026-10-10",
-    time: "10:00 AM",
-    location: "Little Stars School",
-    organizer: "Bright Futures",
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=900",
-    status: "completed",
-  },
-  {
-    id: "6",
-    title: "Food for the Needy",
-    category: "Donation",
-    date: "2026-10-05",
-    time: "12:00 PM",
-    location: "Hope Community Kitchen",
-    organizer: "Helping Hands",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=900",
-    status: "completed",
-  },
-];
 
 type FilterType = "all" | "upcoming" | "completed";
 
@@ -124,32 +54,56 @@ export default function JoinedEventsPage() {
 
   const [sortOrder, setSortOrder] = useState("soonest");
 
-  const {data}= authClient.useSession();
-  // Set this to [] to preview the empty state.
-  const [events,setEvents] = useState<JoinedEvent[]>([]);
-useEffect(() => {
+  const { data, isPending } = authClient.useSession();
+  const [events, setEvents] = useState<JoinedEvent[]>([]);
+  const [loadedRequest, setLoadedRequest] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const userEmail = data?.user?.email;
+  const requestKey = userEmail ? `${userEmail}:${retryCount}` : null;
+  const isLoading =
+    isPending || Boolean(userEmail && loadedRequest !== requestKey);
+  const currentLoadError = loadedRequest === requestKey ? loadError : null;
+
+  useEffect(() => {
+    if (isPending || !userEmail || !requestKey) return;
+
+    const email = userEmail;
+    const key = requestKey;
+    const controller = new AbortController();
+
     async function fetchJoinedEvents() {
       try {
-        const res = await fetch(`http://localhost:8000/joined-events/${data?.user?.email}`);
+        const res = await fetch(
+          `http://localhost:8000/join-event/${encodeURIComponent(email)}`,
+        );
 
         if (!res.ok) {
           throw new Error("Failed to fetch joined events.");
         }
 
         const joinEventsData: JoinedEvent[] = await res.json();
+        if (controller.signal.aborted) return;
+        console.log("Fetched Joined Events:", joinEventsData);
 
         setEvents(joinEventsData);
+        setLoadError(null);
+        setLoadedRequest(key);
       } catch (error) {
-        
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : "Something went wrong."
-        );
-      } finally {
-       
-        toast.success("Joined events loaded successfully!");
+        if (!controller.signal.aborted) {
+          const message =
+            error instanceof Error ? error.message : "Something went wrong.";
+          setLoadError(message);
+          setLoadedRequest(key);
+          toast.error(message);
+        }
       }
+    }
+
+    void fetchJoinedEvents();
+    return () => controller.abort();
+  }, [isPending, requestKey, userEmail]);
+
   const counts = {
     all: events.length,
     upcoming: events.filter((e) => e.status === "upcoming").length,
@@ -158,7 +112,7 @@ useEffect(() => {
 
   const filteredEvents = useMemo(() => {
     let result = [...events];
-
+    console.log("Filtered Events:", result);
     if (activeFilter !== "all") {
       result = result.filter((event) => event.status === activeFilter);
     }
@@ -200,7 +154,30 @@ useEffect(() => {
         description="Explore the events you've joined, stay connected with your community, and make a meaningful difference."
       />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {events.length === 0 ? (
+        {isLoading ? (
+          <p
+            role="status"
+            className="rounded-2xl border border-border bg-card px-5 py-16 text-center text-sm text-muted-foreground"
+          >
+            Loading your joined events...
+          </p>
+        ) : !userEmail ? (
+          <EmptyState />
+        ) : currentLoadError ? (
+          <div
+            role="alert"
+            className="rounded-2xl border border-destructive/30 bg-card px-5 py-16 text-center"
+          >
+            <p className="text-sm text-destructive">{currentLoadError}</p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((count) => count + 1)}
+              className="mt-5 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Try again
+            </button>
+          </div>
+        ) : events.length === 0 ? (
           /* EMPTY STATE */
           <EmptyState />
         ) : (
@@ -276,7 +253,7 @@ useEffect(() => {
             ) : (
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 {filteredEvents.map((event, index) => (
-                  <EventCard key={event.id} event={event} wide={index >= 4} />
+                  <EventCard key={event._id} event={event} wide={index >= 4} />
                 ))}
               </div>
             )}
@@ -304,7 +281,7 @@ function EventCard({
       }`}
     >
       {/* Image */}
-      <div className="relative h-[162px] overflow-hidden bg-muted">
+      <div className="relative h-40.5 overflow-hidden bg-muted">
         <img
           src={event.image}
           alt={event.title}
@@ -314,10 +291,10 @@ function EventCard({
         {/* Category */}
         <span
           className={`absolute left-0 top-0 min-w-43.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
-            categoryColors[event.category] || "bg-[#ff397e]"
+            categoryColors[event.type] || "bg-[#ff397e]"
           }`}
         >
-          {event.category}
+          {event.type}
         </span>
 
         {/* Status */}
@@ -364,12 +341,19 @@ function EventCard({
             </p>
           </div>
 
-          <Button className="h-11 shrink-0 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
-            <Link href={`/events/${event.id}`}>
+          {event.eventId ? (
+            <Link
+              href={`/events/${encodeURIComponent(event.eventId)}`}
+              className="inline-flex h-11 shrink-0 items-center justify-center gap-1 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
               View Details
               <ArrowRight size={16} className="ml-1" />
             </Link>
-          </Button>
+          ) : (
+            <span className="text-xs text-muted-foreground">
+              Details unavailable
+            </span>
+          )}
         </div>
       </div>
     </article>
@@ -393,11 +377,7 @@ function EmptyState() {
       {/* Center content */}
       <div className="relative z-10">
         <div className="mb-4 flex justify-center">
-          <CalendarHeart
-            size={55}
-            strokeWidth={1.2}
-            className="text-primary"
-          />
+          <CalendarHeart size={55} strokeWidth={1.2} className="text-primary" />
         </div>
 
         <h2 className="text-2xl font-bold text-foreground">
