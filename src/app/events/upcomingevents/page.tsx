@@ -22,7 +22,7 @@ import {
   getEventCategoryId,
   type Event,
 } from "./data";
-import Loader from "@/components/Loader";
+import Loader from "@/components/loader/Loader";
 import { Basic } from "@/components/loader/CardSkeleton";
 
 type SortOption = "newest" | "oldest";

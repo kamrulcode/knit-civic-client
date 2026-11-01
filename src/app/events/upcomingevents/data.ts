@@ -12,6 +12,8 @@ export interface Event {
   location: string;
   image: string;
   date: string;
+  time?: string;
+  createdAt?: string;
   name?: string;
   email?: string;
   profileImg?: string;
@@ -60,16 +62,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function parseEvent(value: unknown): Event {
+export function parseEvent(value: unknown): Event {
   if (!isRecord(value)) {
     throw new Error("The events response contains an invalid event.");
   }
 
+  const rawId = value.id ?? value._id;
   const id =
-    typeof value.id === "string"
-      ? value.id
-      : typeof value._id === "string"
-        ? value._id
+    typeof rawId === "string"
+      ? rawId
+      : isRecord(rawId) && typeof rawId.$oid === "string"
+        ? rawId.$oid
         : undefined;
 
   if (
@@ -92,6 +95,9 @@ function parseEvent(value: unknown): Event {
     location: value.location,
     image: value.image,
     date: value.date,
+    time: typeof value.time === "string" ? value.time : undefined,
+    createdAt:
+      typeof value.createdAt === "string" ? value.createdAt : undefined,
     name: typeof value.name === "string" ? value.name : undefined,
     email: typeof value.email === "string" ? value.email : undefined,
     profileImg:
@@ -113,4 +119,33 @@ export async function fetchEvents(signal?: AbortSignal): Promise<Event[]> {
   }
 
   return data.map(parseEvent);
+}
+
+export async function fetchEventsByEmail(
+  email: string,
+  signal?: AbortSignal,
+): Promise<Event[]> {
+  const response = await fetch(
+    `${EVENTS_URL}/${encodeURIComponent(email)}`,
+    { signal, cache: "no-store" },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to load your events (HTTP ${response.status}).`);
+  }
+
+  const data: unknown = await response.json();
+  if (!Array.isArray(data)) {
+    throw new Error("The events response must be a list.");
+  }
+
+  return data.map(parseEvent);
+}
+
+export async function fetchEventById(
+  id: string,
+  signal?: AbortSignal,
+): Promise<Event | undefined> {
+  const events = await fetchEvents(signal);
+  return events.find((event) => event.id === id);
 }

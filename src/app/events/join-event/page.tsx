@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   CalendarCheck,
@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroPage from "@/components/events/HeroPage";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 type EventStatus = "upcoming" | "completed";
 
@@ -122,9 +124,32 @@ export default function JoinedEventsPage() {
 
   const [sortOrder, setSortOrder] = useState("soonest");
 
+  const {data}= authClient.useSession();
   // Set this to [] to preview the empty state.
-  const [events] = useState<JoinedEvent[]>(joinedEvents);
+  const [events,setEvents] = useState<JoinedEvent[]>([]);
+useEffect(() => {
+    async function fetchJoinedEvents() {
+      try {
+        const res = await fetch(`http://localhost:8000/joined-events/${data?.user?.email}`);
 
+        if (!res.ok) {
+          throw new Error("Failed to fetch joined events.");
+        }
+
+        const joinEventsData: JoinedEvent[] = await res.json();
+
+        setEvents(joinEventsData);
+      } catch (error) {
+        
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Something went wrong."
+        );
+      } finally {
+       
+        toast.success("Joined events loaded successfully!");
+      }
   const counts = {
     all: events.length,
     upcoming: events.filter((e) => e.status === "upcoming").length,
@@ -227,7 +252,7 @@ export default function JoinedEventsPage() {
                   id="event-sort"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
-                  className="h-12 w-full min-w-[200px] rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-primary"
+                  className="h-12 w-full min-w-50 rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-primary"
                 >
                   <option value="soonest">Event Date (Soonest)</option>
                   <option value="latest">Event Date (Latest)</option>
@@ -288,7 +313,7 @@ function EventCard({
 
         {/* Category */}
         <span
-          className={`absolute left-0 top-0 min-w-[175px] rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
+          className={`absolute left-0 top-0 min-w-43.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
             categoryColors[event.category] || "bg-[#ff397e]"
           }`}
         >
@@ -309,7 +334,7 @@ function EventCard({
       </div>
 
       {/* Content */}
-      <div className="flex min-h-[220px] flex-col p-4">
+      <div className="flex min-h-55 flex-col p-4">
         <h2 className="line-clamp-1 text-xl font-bold tracking-tight">
           {event.title}
         </h2>
@@ -354,7 +379,7 @@ function EventCard({
 /* EMPTY STATE */
 function EmptyState() {
   return (
-    <section className="relative flex min-h-[295px] flex-col items-center justify-center overflow-hidden rounded-2xl bg-card px-5 py-12 text-center">
+    <section className="relative flex min-h-73.75 flex-col items-center justify-center overflow-hidden rounded-2xl bg-card px-5 py-12 text-center">
       {/* Left decorative leaf */}
       <div className="pointer-events-none absolute -left-3 bottom-0 text-[#087b86]/40">
         <Sprout size={185} strokeWidth={1.2} />
@@ -383,7 +408,7 @@ function EmptyState() {
           Get involved and make a difference. Find an event that inspires you!
         </p>
 
-        <Button className="mt-5 h-[58px] rounded-xl bg-primary px-7 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
+        <Button className="mt-5 h-14.5 rounded-xl bg-primary px-7 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
           <Link href="/events">
             Explore Events
             <ArrowRight size={19} className="ml-2" />

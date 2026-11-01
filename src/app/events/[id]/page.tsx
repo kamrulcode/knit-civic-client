@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Heart, MapPin, Users } from "lucide-react";
 import {
   categoryById,
-  fetchEvents,
+  fetchEventById,
   getEventCategoryId,
 } from "../upcomingevents/data";
+import { Button } from "@/components/ui/button";
+import JoinEventButton from "./JoinEventButton";
 
 type EventDetailsPageProps = {
   params: Promise<{ id: string }>;
@@ -26,8 +28,7 @@ export default async function EventDetailsPage({
   params,
 }: EventDetailsPageProps) {
   const { id } = await params;
-  const events = await fetchEvents();
-  const event = events.find((item) => item.id === id);
+  const event = await fetchEventById(id);
 
   if (!event) notFound();
 
@@ -38,15 +39,15 @@ export default async function EventDetailsPage({
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <article className="mx-auto w-full max-w-6xl">
         <Link
-          href="/events/upcomingevents"
+          href="/events/manage-event"
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back to events
+          Back to your events
         </Link>
 
         <div className="grid overflow-hidden rounded-3xl border border-border bg-card lg:grid-cols-2">
-          <div className="relative min-h-72 bg-muted sm:min-h-96">
+          <div className="relative min-h-72 overflow-hidden bg-muted sm:min-h-96">
             <img
               src={event.image}
               alt={event.title}
@@ -80,9 +81,12 @@ export default async function EventDetailsPage({
               <div className="flex items-center gap-3">
                 <CalendarDays className="size-5 shrink-0 text-primary" />
                 <div>
-                  <dt className="text-xs text-muted-foreground">Date</dt>
+                  <dt className="text-xs text-muted-foreground">
+                    Date and time
+                  </dt>
                   <dd className="mt-1 text-sm font-medium">
                     {formatDate(event.date)}
+                    {event.time ? ` at ${event.time}` : ""}
                   </dd>
                 </div>
               </div>
@@ -97,7 +101,9 @@ export default async function EventDetailsPage({
                 <div className="flex items-center gap-3">
                   <Users className="size-5 shrink-0 text-primary" />
                   <div>
-                    <dt className="text-xs text-muted-foreground">Participants</dt>
+                    <dt className="text-xs text-muted-foreground">
+                      Participants
+                    </dt>
                     <dd className="mt-1 text-sm font-medium">
                       {event.joined} people already joined
                     </dd>
@@ -105,19 +111,14 @@ export default async function EventDetailsPage({
                 </div>
               )}
               {event.name && (
-                <div className="text-sm">
+                <div>
                   <dt className="text-xs text-muted-foreground">Organizer</dt>
-                  <dd className="mt-1 font-medium">{event.name}</dd>
+                  <dd className="mt-1 text-sm font-medium">{event.name}</dd>
                 </div>
               )}
             </dl>
 
-            <Link
-              href="/events/upcomingevents"
-              className="mt-8 inline-flex h-10 w-fit items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Explore more events
-            </Link>
+            <JoinEventButton event={event} />
           </div>
         </div>
       </article>

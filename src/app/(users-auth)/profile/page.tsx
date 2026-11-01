@@ -19,28 +19,18 @@ import {
   Check,
   ArrowUpRight,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type Profile = {
   name: string;
   email: string;
-  photoURL: string;
-  phone: string;
-  location: string;
-  bio: string;
-  website: string;
-};
-
-const initialProfile: Profile = {
-  name: "Alex Morgan",
-  email: "alex@example.com",
-  photoURL: "https://i.pravatar.cc/300?img=12",
-  phone: "+880 1712-345678",
-  location: "Dhaka, Bangladesh",
-  bio: "Passionate about helping people and making our community a better place. Small actions can create big changes!",
-  website: "https://alexmorgan.com",
+  image: string;
 };
 
 export default function ProfilePage() {
+  const { data } = authClient.useSession();
+  const initialProfile: Profile = data?.user;
+
   const [profile, setProfile] = useState(initialProfile);
   const [editData, setEditData] = useState(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
@@ -61,8 +51,8 @@ export default function ProfilePage() {
       return;
     }
 
-    if (editData.photoURL && !/^https?:\/\/.+/i.test(editData.photoURL)) {
-      toast.error("Please enter a valid photo URL.");
+    if (editData.image && !/^https?:\/\/.+/i.test(editData.image)) {
+      toast.error("Please enter a valid image URL.");
       return;
     }
 
@@ -100,11 +90,11 @@ export default function ProfilePage() {
         {/* Profile hero card */}
 
         {/* TWO COLUMN PROFILE LAYOUT */}
-        <section className="grid grid-cols-1 items-start gap-6 lg:grid-cols-5">
+        <section className="grid grid-cols-2 items-start gap-6 lg:grid-cols-5">
           {/* LEFT: MY ACCOUNT / PROFILE */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-card lg:col-span-3">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card lg:col-span-2">
             {/* Profile banner */}
-            <div className="relative h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-card">
+            <div className="relative h-32 bg-linear-to-r from-primary/20 via-primary/10 to-card">
               <div className="absolute -right-10 -top-20 h-48 w-48 rounded-full bg-[#ff397e]/15 blur-3xl" />
 
               <div className="absolute left-6 top-5">
@@ -120,7 +110,7 @@ export default function ProfilePage() {
               <div className="-mt-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                 <div className="relative">
                   <img
-                    src={profile.photoURL}
+                    src={profile.image}
                     alt={profile.name}
                     className="h-24 w-24 rounded-full border-4 border-card bg-muted object-cover text-2xl"
                   />
@@ -148,15 +138,17 @@ export default function ProfilePage() {
                   </span>
                 </div>
 
-                <p className="mt-2 text-sm text-muted-foreground">{profile.email}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {profile.email}
+                </p>
 
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  {profile.bio}
+                  {profile.bio ? profile.bio : "No bio provided. Add a short description about yourself."}
                 </p>
               </div>
 
               {/* Personal details */}
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <h3 className="mb-5 text-base font-bold">Personal Details</h3>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -196,10 +188,10 @@ export default function ProfilePage() {
                     value="Active"
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Profile completion */}
-              <div className="mt-7 rounded-xl border border-border bg-background p-4">
+              {/* <div className="mt-7 rounded-xl border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold">
                     Your community profile
@@ -214,12 +206,12 @@ export default function ProfilePage() {
                 <p className="mt-2 text-xs text-muted-foreground">
                   Complete your profile to help others get to know you.
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* RIGHT: YOUR ACTIVITY */}
-          <div className="rounded-2xl border border-border bg-card p-6 lg:col-span-2">
+          <div className="rounded-2xl border border-border bg-card p-6 lg:col-span-3">
             <div className="mb-6">
               <p className="text-xs font-bold uppercase tracking-[2px] text-primary">
                 COMMUNITY CONTRIBUTION
@@ -232,7 +224,7 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 flex  gap-5">
               {/* Saved events */}
               <div className="group rounded-2xl border border-border bg-background p-5 transition hover:border-primary/60">
                 <div className="flex items-center justify-between">
@@ -488,11 +480,11 @@ function EditInput({
         {label}
       </span>
       <input
-      type={type}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      placeholder={placeholder}
-      className="h-12 w-full rounded-xl border border-border bg-background px-3 text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+        type={type}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="h-12 w-full rounded-xl border border-border bg-background px-3 text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
       />
     </label>
   );

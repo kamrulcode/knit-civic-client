@@ -1,6 +1,5 @@
 "use client";
-
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -18,87 +17,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import HeroPage from "@/components/events/HeroPage";
-
-type Event = {
-  id: string;
-  title: string;
-  category: string;
-  image: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  createdAt: string;
-};
-
-const initialEvents: Event[] = [
-  {
-    id: "1",
-    title: "Tree Plantation Drive",
-    category: "Plantation",
-    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900",
-    date: "2026-11-15",
-    time: "9:00 AM",
-    location: "Central Park, Green City",
-    description: "Let's plant trees and build a greener world for everyone.",
-    createdAt: "2026-10-20",
-  },
-  {
-    id: "2",
-    title: "Winter Clothes Distribution",
-    category: "Donation",
-    image: "https://images.unsplash.com/photo-1489493585363-d69421e0edd3?w=900",
-    date: "2026-11-18",
-    time: "10:00 AM",
-    location: "Helping Hands Shelter",
-    description: "Share warmth and kindness with those who need it most.",
-    createdAt: "2026-10-22",
-  },
-  {
-    id: "3",
-    title: "Clean Our Neighborhood",
-    category: "Cleanup",
-    image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=900",
-    date: "2026-11-20",
-    time: "8:00 AM",
-    location: "Main Street, Green City",
-    description: "Join us to make our neighborhood clean and beautiful.",
-    createdAt: "2026-10-25",
-  },
-  {
-    id: "4",
-    title: "Brighter Future Education Drive",
-    category: "Education",
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=900",
-    date: "2026-12-02",
-    time: "10:00 AM",
-    location: "Little Stars School",
-    description: "Help children learn, grow and build a brighter future.",
-    createdAt: "2026-10-28",
-  },
-  {
-    id: "5",
-    title: "Food for the Needy",
-    category: "Donation",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=900",
-    date: "2026-10-15",
-    time: "12:00 PM",
-    location: "Hope Community Kitchen",
-    description: "Provide nutritious meals to families in need.",
-    createdAt: "2026-10-01",
-  },
-  {
-    id: "6",
-    title: "Community Health Awareness",
-    category: "Healthcare",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900",
-    date: "2026-10-10",
-    time: "9:00 AM",
-    location: "Community Health Center",
-    description: "Promoting healthy living through awareness and education.",
-    createdAt: "2026-09-25",
-  },
-];
+import { authClient } from "@/lib/auth-client";
+import { fetchEventsByEmail, getEventCategoryId, type Event } from "../upcomingevents/data";
 
 const categories = [
   "All Event Types",
@@ -118,14 +38,20 @@ const categoryColors: Record<string, string> = {
 };
 
 function isUpcoming(date: string) {
+  const eventDate = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(eventDate.getTime())) return false;
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  return new Date(`${date}T00:00:00`) >= today;
+  return eventDate >= today;
 }
 
 function formatDate(date: string) {
-  return new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
+  const parsedDate = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsedDate.getTime())) return date;
+
+  return parsedDate.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -133,16 +59,55 @@ function formatDate(date: string) {
 }
 
 export default function ManageEventsPage() {
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const { data } = authClient.useSession();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loadedRequest, setLoadedRequest] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Event Types");
   const [sort, setSort] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
+  const userEmail = data?.user?.email;
+  const requestKey = userEmail ? `${userEmail}:${retryCount}` : null;
+  const isLoading = Boolean(userEmail && loadedRequest !== requestKey);
+  const currentLoadError =
+    loadedRequest === requestKey ? loadError : null;
+
+  useEffect(() => {
+    if (!userEmail) return;
+
+    const email = userEmail;
+    const key = `${email}:${retryCount}`;
+    const controller = new AbortController();
+
+    async function loadEvents() {
+      try {
+        const userEvents = await fetchEventsByEmail(email, controller.signal);
+        if (controller.signal.aborted) return;
+
+        setEvents(userEvents);
+        setCurrentPage(1);
+        setLoadError(null);
+        setLoadedRequest(key);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setLoadError(
+            error instanceof Error ? error.message : "Unable to load your events.",
+          );
+          setLoadedRequest(key);
+        }
+      }
+    }
+
+    void loadEvents();
+    return () => controller.abort();
+  }, [userEmail, retryCount]);
 
   const EVENTS_PER_PAGE = 4;
 
   // SEARCH + FILTER + SORT
-  const filteredEvents = useMemo(() => {
+  const filteredEvents = (() => {
     let result = [...events];
 
     if (search.trim()) {
@@ -157,18 +122,24 @@ export default function ManageEventsPage() {
     }
 
     if (category !== "All Event Types") {
-      result = result.filter((event) => event.category === category);
+      result = result.filter((event) => {
+        const eventCategory = getEventCategoryId(event.type);
+        const selectedCategory = getEventCategoryId(category);
+        return eventCategory
+          ? eventCategory === selectedCategory
+          : event.type.toLowerCase() === category.toLowerCase();
+      });
     }
 
     result.sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
 
       return sort === "newest" ? dateB - dateA : dateA - dateB;
     });
 
     return result;
-  }, [events, search, category, sort]);
+  })();
 
   // PAGINATION
   const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
@@ -231,7 +202,7 @@ export default function ManageEventsPage() {
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Search your events..."
-              className="h-[60px] w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary"
+              className="h-15 w-full rounded-xl border border-border bg-background pl-12 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary"
             />
           </div>
 
@@ -245,7 +216,7 @@ export default function ManageEventsPage() {
             <select
               value={category}
               onChange={(e) => handleCategory(e.target.value)}
-              className="h-[60px] w-full appearance-none rounded-xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none focus:border-primary"
+              className="h-15 w-full appearance-none rounded-xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none focus:border-primary"
             >
               {categories.map((item) => (
                 <option key={item} value={item}>
@@ -267,7 +238,7 @@ export default function ManageEventsPage() {
             <select
               value={sort}
               onChange={(e) => handleSort(e.target.value)}
-              className="h-[60px] w-full appearance-none rounded-xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none focus:border-primary"
+              className="h-15 w-full appearance-none rounded-xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none focus:border-primary"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -285,7 +256,8 @@ export default function ManageEventsPage() {
             </h1>
 
             <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-              Manage the events you&apos;ve created and keep your community engaged.
+              Manage the events you&apos;ve created and keep your community
+              engaged.
             </p>
           </div>
 
@@ -299,7 +271,31 @@ export default function ManageEventsPage() {
         </div>
 
         {/* EVENT LIST */}
-        {paginatedEvents.length > 0 ? (
+        {currentLoadError ? (
+          <div
+            role="alert"
+            className="flex flex-col items-center justify-center rounded-2xl border border-destructive/30 bg-card px-5 py-20 text-center"
+          >
+            <p className="text-sm text-destructive">{currentLoadError}</p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((count) => count + 1)}
+              className="mt-5 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Try again
+            </button>
+          </div>
+        ) : isLoading ? (
+          <p role="status" className="rounded-2xl border border-border bg-card px-5 py-20 text-center text-sm text-muted-foreground">
+            Loading your events...
+          </p>
+        ) : !userEmail ? (
+          <div className="rounded-2xl border border-border bg-card px-5 py-20 text-center">
+            <p className="text-sm text-muted-foreground">
+              Sign in to view your created events.
+            </p>
+          </div>
+        ) : paginatedEvents.length > 0 ? (
           <div className="space-y-5">
             {paginatedEvents.map((event) => {
               const upcoming = isUpcoming(event.date);
@@ -310,7 +306,7 @@ export default function ManageEventsPage() {
                   className="grid grid-cols-1 gap-5 rounded-2xl border border-border bg-card p-4 transition hover:border-primary/40 lg:grid-cols-[260px_minmax(0,1fr)_195px] lg:items-center"
                 >
                   {/* IMAGE */}
-                  <div className="relative h-[180px] overflow-hidden rounded-lg bg-muted">
+                  <div className="relative h-45 overflow-hidden rounded-lg bg-muted">
                     <img
                       src={event.image}
                       alt={event.title}
@@ -318,11 +314,11 @@ export default function ManageEventsPage() {
                     />
 
                     <span
-                      className={`absolute left-0 top-0 min-w-[155px] rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
-                        categoryColors[event.category] || "bg-[#ff397e]"
+                      className={`absolute left-0 top-0 min-w-38.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
+                        categoryColors[event.type] || "bg-[#ff397e]"
                       }`}
                     >
-                      {event.category}
+                      {event.type}
                     </span>
                   </div>
 
@@ -334,7 +330,8 @@ export default function ManageEventsPage() {
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
                       <CalendarDays size={16} className="text-primary" />
-                      {formatDate(event.date)} • {event.time}
+                      {formatDate(event.date)}
+                      {event.time ? ` • ${event.time}` : ""}
                     </div>
 
                     <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
@@ -346,9 +343,11 @@ export default function ManageEventsPage() {
                       {event.description}
                     </p>
 
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Created on {formatDate(event.createdAt)}
-                    </p>
+                    {event.createdAt && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Created on {formatDate(event.createdAt)}
+                      </p>
+                    )}
                   </div>
 
                   {/* ACTIONS */}
@@ -387,7 +386,7 @@ export default function ManageEventsPage() {
                     </button>
 
                     <Link
-                      href={`/events/${event.id}`}
+                      href={`/events/${encodeURIComponent(event.id)}`}
                       className="flex h-10 items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground transition hover:border-primary hover:text-foreground"
                     >
                       <Eye size={17} />
