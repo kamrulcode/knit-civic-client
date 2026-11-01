@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { HeartPulse } from "lucide-react";
+import { HeartPulse, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 export function Logo() {
   return (
@@ -37,6 +39,9 @@ export function Logo() {
 
 export function Navbar() {
   // TODO: replace with real auth state (e.g. from a session/context provider).
+  const { data } = authClient.useSession();
+  const user = data?.user;
+  console.log(user);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-md">
@@ -52,19 +57,39 @@ export function Navbar() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative">
           {/* Dark / light switch */}
           <ThemeToggle />
 
-          {/* {user ? (
+          {user ? (
             // Logged in → avatar dropdown (name, email, links, logout)
-            <UserMenu user={user} />
+            <>
+              <UserMenu user={user} />
+              <span
+                onClick={async () => {
+                  // Swap with real auth logic later
+                  await authClient.signOut({
+                    fetchOptions: {
+                      onSuccess: () => {
+                        redirect("/login"); // redirect to login page
+                      },
+                    },
+                  });
+                }}
+                className="flex items-center gap-2.5 text-sm font-medium text-destructive"
+              >
+                <LogOut className="size-4" />
+                Log out
+              </span>
+            </>
           ) : (
-            
-          )} */}
-          <Button size="sm" className="rounded-full px-6">
-            Login
-          </Button>
+            <Link
+              href="/login"
+              className="rounded-full px-6 py-1.5 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>

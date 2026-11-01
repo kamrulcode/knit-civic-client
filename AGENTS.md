@@ -16,6 +16,9 @@ Single-package Next.js app (App Router). Code lives under `src/`: routes in `src
 - **Tailwind v4, no config file.** Styling is set up via CSS `@import`s in `src/app/globals.css` (tailwindcss, tw-animate-css, shadcn/tailwind.css, @heroui/styles) and Turbopack in `next.config.ts`.
 - **UI stack is mixed, keyed off `components.json`:** shadcn components use the `base-nova` style but are built on **`@base-ui/react` primitives, not Radix** — copy that import pattern when adding components (`npx shadcn add <component>`). HeroUI is available too. Icons: lucide.
 - `cn` is imported from the `cn` npm package, re-exported by `src/lib/utils`. In components use `import { cn } from "cn"` (matches existing code).
+- **Dark mode is homegrown — do not reach for `next-themes`.** Class-based via `@custom-variant dark (&:is(.dark *))` in `src/app/globals.css`; toggle the `.dark` class on `<html>`, persist under localStorage key `knit-civic-theme`. The root layout (`src/app/layout.tsx`) has an inline pre-hydration script that applies it — keep it in sync if the key changes. For theme-dependent icons/images, render both variants and let CSS pick (`dark:hidden` / `hidden dark:block`), e.g. `theme-toggle.tsx`.
+- **Palette lives in `src/app/globals.css`, in two blocks per mode:** shadcn/tailwind tokens (`--primary`, `--surface`, …) and a separate HeroUI override block. Brand color is pink `#ff3d71`. Any color change must update both blocks and both light + dark.
+- **Frontend-only app (no backend yet).** No API routes, data fetching, or auth — all page content is hardcoded/mock (e.g. `mockUser` in `user-menu.tsx`; the navbar's `UserMenu` is commented out pending real auth state). Placeholders live as first-party SVGs in `public/`, which is why `next.config.ts` sets `dangerouslyAllowSVG: true` — don't replicate that for untrusted third-party images.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

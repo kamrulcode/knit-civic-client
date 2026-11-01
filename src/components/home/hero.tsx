@@ -54,7 +54,7 @@ export function Hero() {
             Together We Can
           </span>
 
-          <h1 className="mt-5 text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.4rem]">
+          <h1 className="mt-5 text-4xl font-bold leading-[1.15] tracking-tight text-foreground sm:text-5xl lg:text-[3.4rem]">
             Small Actions
             <br />
             Create <span className="text-primary">Big Change</span>

@@ -1,5 +1,3 @@
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { Hero } from "@/components/home/hero";
 import { Stats } from "@/components/home/stats-bar";
 import { FeaturedEvents } from "@/components/home/featured-events";
@@ -12,28 +10,22 @@ import { Newsletter } from "@/components/home/newsletter";
 export default function Home() {
   return (
     <div className="min-h-svh">
-      <Navbar />
+      <Hero />
+      <Stats />
+      <FeaturedEvents />
+      <EventCategories />
+      <HowItWorks />
 
-      <main>
-        <Hero />
-        <Stats />
-        <FeaturedEvents />
-        <EventCategories />
-        <HowItWorks />
-
-        {/* Inset band containing gallery, testimonials + newsletter */}
-        <section className="mx-auto w-full max-w-7xl px-3 pb-16 sm:px-5">
-          <div className="rounded-[2.5rem] bg-surface/60 py-2">
-            <CommunityGallery />
-            <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
-              <Testimonials />
-              <Newsletter />
-            </div>
+      {/* Inset band containing gallery, testimonials + newsletter */}
+      <section className="mx-auto w-full max-w-7xl px-3 pb-16 sm:px-5">
+        <div className="rounded-[2.5rem] bg-surface/60 py-2">
+          <CommunityGallery />
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
+            <Testimonials />
+            <Newsletter />
           </div>
-        </section>
-      </main>
-
-      <Footer />
+        </div>
+      </section>
     </div>
   );
 }
