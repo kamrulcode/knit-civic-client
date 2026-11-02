@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
+import { CardSkeleton } from "@/components/loader/CardSkeleton";
 import {
   fetchEventsByEmail,
   getEventCategoryId,
@@ -63,7 +64,7 @@ function formatDate(date: string) {
 }
 
 export default function ManageEventsPage() {
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   const [events, setEvents] = useState<Event[]>([]);
   const [loadedRequest, setLoadedRequest] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -74,11 +75,11 @@ export default function ManageEventsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const userEmail = data?.user?.email;
   const requestKey = userEmail ? `${userEmail}:${retryCount}` : null;
-  const isLoading = Boolean(userEmail && loadedRequest !== requestKey);
+  const isLoading = isPending || Boolean(userEmail && loadedRequest !== requestKey);
   const currentLoadError = loadedRequest === requestKey ? loadError : null;
 
   useEffect(() => {
-    if (!userEmail) return;
+    if (isPending || !userEmail) return;
 
     const email = userEmail;
     const key = `${email}:${retryCount}`;
@@ -107,7 +108,7 @@ export default function ManageEventsPage() {
 
     void loadEvents();
     return () => controller.abort();
-  }, [userEmail, retryCount]);
+  }, [isPending, userEmail, retryCount]);
 
   const EVENTS_PER_PAGE = 4;
 
@@ -182,15 +183,25 @@ export default function ManageEventsPage() {
     if (!confirmed) return;
 
     try {
+      const { data: jwtData } = await authClient.token();
+      const token = jwtData?.token;
+
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers.authorization = `Bearer ${token}`;
+      }
+
       const res = await fetch(
         `http://localhost:8000/events/${encodeURIComponent(userEmail)}/${id}`,
         {
           method: "DELETE",
+          headers,
         },
       );
 
       if (!res.ok) {
-        throw new Error("Failed to delete event.");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to delete event.");
       }
 
       const data = await res.json();
@@ -204,7 +215,11 @@ export default function ManageEventsPage() {
       }
     } catch (error) {
       console.error("Error deleting event:", error);
-      toast.error("Something went wrong while deleting the event.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting the event.",
+      );
     }
   };
 
@@ -316,12 +331,11 @@ export default function ManageEventsPage() {
             </button>
           </div>
         ) : isLoading ? (
-          <p
-            role="status"
-            className="rounded-2xl border border-border bg-card px-5 py-20 text-center text-sm text-muted-foreground"
-          >
-            Loading your events...
-          </p>
+          <div className="flex flex-col gap-5">
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
         ) : !userEmail ? (
           <div className="rounded-2xl border border-border bg-card px-5 py-20 text-center">
             <p className="text-sm text-muted-foreground">

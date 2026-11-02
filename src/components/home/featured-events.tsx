@@ -39,19 +39,19 @@ import { ReactNode } from "react";
 // ];
 
 interface RecentEvents {
-  tag: ReactNode;
-  tagClass(arg0: string, tagClass: any): string | undefined;
-  _id: string,
-  title: string,
-  description: string,
-  type: string,
-  location: string,
-  image: string,
-  date: string,
-  name: string,
-  email: string,
-  profileImg: string,
-  joined: number,
+  tag?: ReactNode;
+  tagClass?: string;
+  _id: string;
+  title: string;
+  description: string;
+  type: string;
+  location: string;
+  image: string;
+  date: string;
+  name: string;
+  email: string;
+  profileImg: string;
+  joined: number;
 }
 
 const joinerAvatars = [1, 6, 7, 8];

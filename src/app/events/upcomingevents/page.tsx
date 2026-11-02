@@ -22,8 +22,7 @@ import {
   getEventCategoryId,
   type Event,
 } from "./data";
-import Loader from "@/components/loader/Loader";
-import { Basic } from "@/components/loader/CardSkeleton";
+import { CardSkeleton } from "@/components/loader/CardSkeleton";
 
 type SortOption = "newest" | "oldest";
 
@@ -450,9 +449,10 @@ export default function UpcomingEventsPage() {
             //   Loading events...
             // </p>
             <div className="flex gap-5">
-              <Basic />
-              <Basic />
-              <Basic />
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+
             </div>
           ) : paged.length === 0 ? (
             <p className="mt-6 rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">

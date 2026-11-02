@@ -1,3 +1,6 @@
+import { authClient } from "@/lib/auth-client";
+
+
 export type EventCategoryId =
   | "plantation"
   | "donation"
@@ -25,19 +28,19 @@ export const eventCategories: {
   label: string;
   badgeClass: string;
 }[] = [
-  {
-    id: "plantation",
-    label: "Plantation",
-    badgeClass: "bg-emerald-500 text-white",
-  },
-  { id: "donation", label: "Donation", badgeClass: "bg-red-400 text-white" },
-  { id: "cleanup", label: "Cleanup", badgeClass: "bg-sky-400 text-white" },
-  {
-    id: "education",
-    label: "Education",
-    badgeClass: "bg-violet-400 text-white",
-  },
-];
+    {
+      id: "plantation",
+      label: "Plantation",
+      badgeClass: "bg-emerald-500 text-white",
+    },
+    { id: "donation", label: "Donation", badgeClass: "bg-red-400 text-white" },
+    { id: "cleanup", label: "Cleanup", badgeClass: "bg-sky-400 text-white" },
+    {
+      id: "education",
+      label: "Education",
+      badgeClass: "bg-violet-400 text-white",
+    },
+  ];
 
 export const categoryById = new Map(
   eventCategories.map((category) => [category.id, category]),
@@ -125,13 +128,36 @@ export async function fetchEventsByEmail(
   email: string,
   signal?: AbortSignal,
 ): Promise<Event[]> {
+  let token: string | undefined;
+
+  try {
+    const { data: jwtData } = await authClient.token();
+    token = jwtData?.token;
+  } catch (err) {
+    console.error("Failed to retrieve auth token:", err);
+  }
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(
     `${EVENTS_URL}/${encodeURIComponent(email)}`,
-    { signal, cache: "no-store" },
+    {
+      signal,
+      cache: "no-store",
+      headers,
+    },
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to load your events (HTTP ${response.status}).`);
+    const errorData = await response.json().catch(() => ({}));
+    const message =
+      typeof errorData?.message === "string"
+        ? errorData.message
+        : `Failed to load your events (HTTP ${response.status}).`;
+    throw new Error(message);
   }
 
   const data: unknown = await response.json();
@@ -146,6 +172,19 @@ export async function fetchEventById(
   id: string,
   signal?: AbortSignal,
 ): Promise<Event | undefined> {
+  try {
+    const response = await fetch(`${EVENTS_URL}/single/${encodeURIComponent(id)}`, {
+      signal,
+      cache: "no-store",
+    });
+    if (response.ok) {
+      const data: unknown = await response.json();
+      return parseEvent(data);
+    }
+  } catch {
+    // fallback to searching list of events below
+  }
+
   const events = await fetchEvents(signal);
   return events.find((event) => event.id === id);
 }

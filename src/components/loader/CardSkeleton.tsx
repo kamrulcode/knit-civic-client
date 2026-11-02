@@ -1,6 +1,6 @@
 import { Skeleton } from "@heroui/react";
 
-export function Basic() {
+export function CardSkeleton() {
   return (
     <div className="shadow-panel w-88 space-y-5 rounded-lg bg-transparent p-4">
       <Skeleton className="h-32 rounded-lg" />

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { CardSkeleton } from "@/components/loader/CardSkeleton";
 
 type EventStatus = "upcoming" | "completed";
 
@@ -74,17 +75,26 @@ export default function JoinedEventsPage() {
     const controller = new AbortController();
 
     async function fetchJoinedEvents() {
-      const { data: jwtData, error } = await authClient.token()
-
-      const jwtToken = jwtData?.token
+      let token: string | undefined;
+      try {
+        const { data: jwtData } = await authClient.token();
+        token = jwtData?.token;
+      } catch (err) {
+        console.error("Failed to retrieve auth token:", err);
+      }
 
       try {
-        const res = await fetch(
-          `http://localhost:8000/join-event/${encodeURIComponent(email)}`, {
-          headers: {
-            authorization: `Bearer ${jwtToken}`
-          }
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers.authorization = `Bearer ${token}`;
         }
+
+        const res = await fetch(
+          `http://localhost:8000/join-event/${encodeURIComponent(email)}`,
+          {
+            signal: controller.signal,
+            headers,
+          },
         );
 
         if (!res.ok) {
@@ -165,12 +175,12 @@ export default function JoinedEventsPage() {
       />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {isLoading ? (
-          <p
-            role="status"
-            className="rounded-2xl border border-border bg-card px-5 py-16 text-center text-sm text-muted-foreground"
-          >
-            Loading your joined events...
-          </p>
+          <div className="flex gap-5">
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+
+          </div>
         ) : !userEmail ? (
           <EmptyState />
         ) : currentLoadError ? (

@@ -35,18 +35,21 @@ export default async function EventDetailsPage({
   params,
 }: EventDetailsPageProps) {
   const { id } = await params;
-  const response = await fetch("http://localhost:8000/events", {
+  const response = await fetch(`http://localhost:8000/events/${id}`, {
     cache: "no-store",
   });
+
+  if (response.status === 404) {
+    notFound();
+  }
 
   if (!response.ok) {
     throw new Error(`Failed to load events (HTTP ${response.status}).`);
   }
 
-  const events: Event[] = await response.json();
-  const event = events.find((item) => item._id === id);
+  const event: Event = await response.json();
 
-  if (!event) notFound();
+  if (!event || !event._id) notFound();
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">

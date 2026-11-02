@@ -122,11 +122,19 @@ export default function EditEventPage() {
     try {
       setIsSubmitting(true);
 
+      const { data: jwtData } = await authClient.token();
+      const token = jwtData?.token;
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers.authorization = `Bearer ${token}`;
+      }
+
       const res = await fetch(`http://localhost:8000/events/${eventId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
           ...formData,
           updatedAt: new Date().toISOString(),

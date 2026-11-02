@@ -92,6 +92,14 @@ export default function CreateEventPage() {
       return;
     }
 
+    let token: string | undefined;
+    try {
+      const { data: jwtData } = await authClient.token();
+      token = jwtData?.token;
+    } catch (err) {
+      console.error("Failed to retrieve auth token:", err);
+    }
+
     if (
       !formData.title.trim() ||
       !formData.description.trim() ||
@@ -136,9 +144,16 @@ export default function CreateEventPage() {
         createdAt: new Date().toISOString(),
       };
 
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers.authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch("http://localhost:8000/create-event", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(eventPayload),
       });
 
