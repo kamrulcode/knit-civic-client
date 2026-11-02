@@ -76,10 +76,10 @@ export default function CreateEventPage() {
 
   const formattedDate = formData.date
     ? new Date(`${formData.date}T00:00:00`).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
     : "Event Date";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -166,6 +166,7 @@ export default function CreateEventPage() {
         highlight="Event"
         badge="Make a Difference"
         description="Have an idea that can bring people together? Create an event and inspire your community to make a positive change."
+        image="/images/createevents.png"
       />
       {/* Decorative background */}
       <div className="pointer-events-none absolute bottom-16 right-10 hidden text-sky-500/30 lg:block">
@@ -482,8 +483,9 @@ export default function CreateEventPage() {
           </div>
 
           {/* Decorative illustration */}
-          <div className="hidden h-75 items-center justify-center lg:flex">
-            <Leaf size={230} strokeWidth={1} className="text-sky-500/40" />
+          <div className="hidden h-75 items-center justify-center lg:flex relative">
+            <img src="/images/Community botanical.svg" alt="leaf" className="h-full w-full object-fit absolute top-15" />
+
           </div>
         </aside>
       </div>

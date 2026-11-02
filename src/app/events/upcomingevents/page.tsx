@@ -366,7 +366,7 @@ export default function UpcomingEventsPage() {
                   </defs>
 
                   <image
-                    href="/images/Volunteer.png"
+                    href="/images/upcomingevents.png"
                     width="243"
                     height="184"
                     preserveAspectRatio="xMidYMid slice"
@@ -495,8 +495,8 @@ export default function UpcomingEventsPage() {
                   aria-current={n === safePage ? "page" : undefined}
                   onClick={() => setPage(n)}
                   className={`flex size-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${n === safePage
-                      ? "bg-primary text-primary-foreground"
-                      : "border border-border bg-card text-foreground hover:bg-muted"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-foreground hover:bg-muted"
                     }`}
                 >
                   {n}

@@ -76,7 +76,7 @@ export function Navbar() {
                     },
                   });
                 }}
-                className="flex items-center gap-2.5 text-sm font-medium text-destructive"
+                className="flex items-center gap-2.5 text-sm font-medium text-destructive bg-primary rounded-full px-5 py-2 text-primary-foreground hover:bg-primary/90"
               >
                 <LogOut className="size-4" />
                 Log out

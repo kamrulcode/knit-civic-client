@@ -90,7 +90,7 @@ export default function HeroPage({
           <div className="w-full">
             <svg
               viewBox="0 0 243 184"
-              className="h-auto w-full"
+              className="h-auto w-full z-30"
               role="img"
               aria-label="Community volunteers"
             >

@@ -132,18 +132,18 @@ export default function JoinedEventsPage() {
     value: FilterType;
     count: number;
   }[] = [
-    { label: "All Events", value: "all", count: counts.all },
-    {
-      label: "Upcoming",
-      value: "upcoming",
-      count: counts.upcoming,
-    },
-    {
-      label: "Completed",
-      value: "completed",
-      count: counts.completed,
-    },
-  ];
+      { label: "All Events", value: "all", count: counts.all },
+      {
+        label: "Upcoming",
+        value: "upcoming",
+        count: counts.upcoming,
+      },
+      {
+        label: "Completed",
+        value: "completed",
+        count: counts.completed,
+      },
+    ];
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6 lg:px-12">
@@ -152,6 +152,7 @@ export default function JoinedEventsPage() {
         highlight="Events"
         badge="Together We Can"
         description="Explore the events you've joined, stay connected with your community, and make a meaningful difference."
+        image="/images/joinevents.png"
       />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {isLoading ? (
@@ -205,11 +206,10 @@ export default function JoinedEventsPage() {
                   <button
                     key={filter.value}
                     onClick={() => setActiveFilter(filter.value)}
-                    className={`rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 ${
-                      activeFilter === filter.value
+                    className={`rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 ${activeFilter === filter.value
                         ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/10"
                         : "border-border bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     {filter.label} ({filter.count})
                   </button>
@@ -276,9 +276,8 @@ function EventCard({
 
   return (
     <article
-      className={`group overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
-        wide ? "xl:col-span-2" : ""
-      }`}
+      className={`group overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${wide ? "xl:col-span-2" : ""
+        }`}
     >
       {/* Image */}
       <div className="relative h-40.5 overflow-hidden bg-muted">
@@ -290,20 +289,18 @@ function EventCard({
 
         {/* Category */}
         <span
-          className={`absolute left-0 top-0 min-w-43.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
-            categoryColors[event.type] || "bg-[#ff397e]"
-          }`}
+          className={`absolute left-0 top-0 min-w-43.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${categoryColors[event.type] || "bg-[#ff397e]"
+            }`}
         >
           {event.type}
         </span>
 
         {/* Status */}
         <span
-          className={`absolute right-2 top-2 flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-bold ${
-            isCompleted
+          className={`absolute right-2 top-2 flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-bold ${isCompleted
               ? "bg-muted text-muted-foreground"
               : "bg-card text-emerald-600 dark:text-emerald-400"
-          }`}
+            }`}
         >
           <CheckCircle2 size={14} />
           {isCompleted ? "Completed" : "Joined"}

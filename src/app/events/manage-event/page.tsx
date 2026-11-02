@@ -215,6 +215,7 @@ export default function ManageEventsPage() {
         highlight="Events"
         badge="Your Community Impact"
         description="Manage the events you've created, track participation, and keep your community engaged."
+        image="/images/manageevents.jpg"
       />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         {/* SEARCH AND FILTER BAR */}
@@ -346,9 +347,8 @@ export default function ManageEventsPage() {
                     />
 
                     <span
-                      className={`absolute left-0 top-0 min-w-38.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${
-                        categoryColors[event.type] || "bg-[#ff397e]"
-                      }`}
+                      className={`absolute left-0 top-0 min-w-38.75 rounded-br-xl px-4 py-4 text-base font-semibold text-white ${categoryColors[event.type] || "bg-[#ff397e]"
+                        }`}
                     >
                       {event.type}
                     </span>
@@ -386,36 +386,18 @@ export default function ManageEventsPage() {
                   <div className="flex flex-col gap-2">
                     <div className="mb-2 flex justify-start lg:justify-center">
                       <span
-                        className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold ${
-                          upcoming
-                            ? "bg-[#064b3b]/70 text-[#13c98b]"
-                            : "bg-muted text-muted-foreground"
-                        }`}
+                        className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold ${upcoming
+                          ? "bg-[#064b3b]/70 text-[#13c98b]"
+                          : "bg-muted text-muted-foreground"
+                          }`}
                       >
                         <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            upcoming ? "bg-[#13c98b]" : "bg-[#91a2b8]"
-                          }`}
+                          className={`h-1.5 w-1.5 rounded-full ${upcoming ? "bg-[#13c98b]" : "bg-[#91a2b8]"
+                            }`}
                         />
                         {upcoming ? "Upcoming" : "Completed"}
                       </span>
                     </div>
-
-                    <Link
-                      href={`/events/edit/${event.id}`}
-                      className="flex h-10 items-center justify-center gap-2 rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
-                    >
-                      <Pencil size={16} />
-                      Edit
-                    </Link>
-
-                    <button
-                      onClick={() => handleDelete(event.id)}
-                      className="flex h-10 items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground transition hover:border-red-500/60 hover:bg-red-500/10 hover:text-red-500"
-                    >
-                      <Trash2 size={16} />
-                      Delete
-                    </button>
 
                     <Link
                       href={`/events/${encodeURIComponent(event.id)}`}
@@ -424,6 +406,24 @@ export default function ManageEventsPage() {
                       <Eye size={17} />
                       View Details
                     </Link>
+
+                    <Link
+                      href={`/events/edit/${event.id}`}
+                      className="flex h-10 items-center justify-center gap-2 rounded-xl bg-muted-foreground/30 text-sm font-semibold text-foreground/80 transition hover:bg-muted-foreground/60"
+                    >
+                      <Pencil size={16} />
+                      Edit
+                    </Link>
+
+                    <button
+                      onClick={() => handleDelete(event.id)}
+                      className="flex h-10 items-center justify-center gap-2 rounded-xl border  text-sm font-semibold transition border-red-500/60 bg-red-500/10 text-red-500 hover:bg-red-500/40"
+                    >
+                      <Trash2 size={16} />
+                      Delete
+                    </button>
+
+
                   </div>
                 </article>
               );
@@ -471,11 +471,10 @@ export default function ManageEventsPage() {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`h-10 min-w-10 rounded-lg border px-3 text-sm font-bold transition ${
-                    currentPage === page
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border text-muted-foreground hover:border-primary"
-                  }`}
+                  className={`h-10 min-w-10 rounded-lg border px-3 text-sm font-bold transition ${currentPage === page
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-muted-foreground hover:border-primary"
+                    }`}
                 >
                   {page}
                 </button>
