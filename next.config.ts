@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
     // All placeholders in public/ are trusted first-party SVG files.
     dangerouslyAllowSVG: true,
     contentDispositionType: "inline",
+
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*',
+      },
+    ],
+
   },
 };
 

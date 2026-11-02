@@ -12,9 +12,10 @@ export default function Home() {
     <div className="min-h-svh">
       <Hero />
       <Stats />
+      <HowItWorks />
       <FeaturedEvents />
       <EventCategories />
-      <HowItWorks />
+
 
       {/* Inset band containing gallery, testimonials + newsletter */}
       <section className="mx-auto w-full max-w-7xl px-3 pb-16 sm:px-5">

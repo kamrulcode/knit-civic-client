@@ -1,51 +1,71 @@
-"use client";
+
 
 import Image from "next/image";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { cn } from "cn";
+import { ReactNode } from "react";
 
-const featuredEvents = [
-  {
-    id: "winter-clothes",
-    title: "Winter Clothes Distribution",
-    tag: "Donation",
-    tagClass: "bg-primary text-primary-foreground",
-    date: "Dec 14, 2026",
-    location: "Khulna, Bangladesh",
-    joined: 45,
-    image: "/images/event-donation.svg",
-  },
-  {
-    id: "tree-plantation",
-    title: "Tree Plantation Drive",
-    tag: "Plantation",
-    tagClass: "bg-emerald-500 text-white",
-    date: "Jan 18, 2027",
-    location: "Dhaka, Bangladesh",
-    joined: 78,
-    image: "/images/event-plantation.svg",
-  },
-  {
-    id: "clean-neighbourhood",
-    title: "Clean Our Neighbourhood",
-    tag: "Cleanup",
-    tagClass: "bg-blue-500 text-white",
-    date: "Feb 20, 2027",
-    location: "Chittagong, Bangladesh",
-    joined: 32,
-    image: "/images/event-cleanup.svg",
-  },
-];
+// const featuredEvents = [
+//   {
+//     id: "winter-clothes",
+//     title: "Winter Clothes Distribution",
+//     tag: "Donation",
+//     tagClass: "bg-primary text-primary-foreground",
+//     date: "Dec 14, 2026",
+//     location: "Khulna, Bangladesh",
+//     joined: 45,
+//     image: "/images/event-donation.svg",
+//   },
+//   {
+//     id: "tree-plantation",
+//     title: "Tree Plantation Drive",
+//     tag: "Plantation",
+//     tagClass: "bg-emerald-500 text-white",
+//     date: "Jan 18, 2027",
+//     location: "Dhaka, Bangladesh",
+//     joined: 78,
+//     image: "/images/event-plantation.svg",
+//   },
+//   {
+//     id: "clean-neighbourhood",
+//     title: "Clean Our Neighbourhood",
+//     tag: "Cleanup",
+//     tagClass: "bg-blue-500 text-white",
+//     date: "Feb 20, 2027",
+//     location: "Chittagong, Bangladesh",
+//     joined: 32,
+//     image: "/images/event-cleanup.svg",
+//   },
+// ];
+
+interface RecentEvents {
+  tag: ReactNode;
+  tagClass(arg0: string, tagClass: any): string | undefined;
+  _id: string,
+  title: string,
+  description: string,
+  type: string,
+  location: string,
+  image: string,
+  date: string,
+  name: string,
+  email: string,
+  profileImg: string,
+  joined: number,
+}
 
 const joinerAvatars = [1, 6, 7, 8];
 
-export function FeaturedEvents() {
+export async function FeaturedEvents() {
+
+  const res = await fetch('http://localhost:8000/recentevents')
+  const featuredEvents: RecentEvents[] = await res.json()
   return (
     <section id="upcoming-events" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
       <div className="flex items-end justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Featured Upcoming Events
+            Recent Upcoming Events
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Join upcoming events and be a part of something meaningful.
@@ -63,7 +83,7 @@ export function FeaturedEvents() {
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {featuredEvents.map((event) => (
           <article
-            key={event.id}
+            key={event._id}
             className="group flex flex-col rounded-3xl border border-border bg-card shadow-xl shadow-black/20 transition-transform duration-200 hover:-translate-y-1"
           >
             <div className="relative overflow-hidden rounded-t-3xl">
@@ -99,7 +119,7 @@ export function FeaturedEvents() {
                   <div className="flex -space-x-2">
                     {joinerAvatars.map((n) => (
                       <Image
-                        key={`${event.id}-${n}`}
+                        key={`${event._id}-${n}`}
                         src={`/avatars/v${n}.svg`}
                         alt="Volunteer"
                         width={24}
