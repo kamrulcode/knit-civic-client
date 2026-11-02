@@ -44,62 +44,66 @@ export function Footer() {
       <div className="grid gap-10 rounded-t-3xl border border-b-0 border-border bg-card px-6 py-12 sm:grid-cols-2 sm:px-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div>
           <Logo />
-          <p className="mt-4 max-w-56 text-xs leading-5 text-muted-foreground">
-            Better People. Stronger Communities.
-          </p>
-          <div className="mt-5 flex gap-2">
-            {socials.map((social) => (
-              <a
-                key={social.id}
-                href="#"
-                aria-label={social.label}
-                className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="size-4"
-                  fill="currentColor"
-                  aria-hidden
+          <div className="ml-12">
+            <p className="mt-4 max-w-56 text-xs leading-5 text-muted-foreground">
+              Better People. Stronger Communities.
+            </p>
+            <div className="mt-5 flex gap-2">
+              {socials.map((social) => (
+                <a
+                  key={social.id}
+                  href="#"
+                  aria-label={social.label}
+                  className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
-                  <path d={social.path} />
-                </svg>
-              </a>
-            ))}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="size-4"
+                    fill="currentColor"
+                    aria-hidden
+                  >
+                    <path d={social.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
-        <nav aria-label="Quick links">
-          <h3 className="text-sm font-semibold">Quick Links</h3>
-          <ul className="mt-4 space-y-2.5">
-            {quickLinks.map((label) => (
-              <li key={label}>
-                <a
-                  href="#"
-                  className="text-xs text-muted-foreground transition-colors hover:text-primary"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="flex justify-between md:justify-around md:col-span-2 md:col-start-2">
+          <nav aria-label="Quick links">
+            <h3 className="text-sm font-semibold">Quick Links</h3>
+            <ul className="mt-4 space-y-2.5">
+              {quickLinks.map((label) => (
+                <li key={label}>
+                  <a
+                    href="#"
+                    className="text-xs text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <nav aria-label="Support">
-          <h3 className="text-sm font-semibold">Support</h3>
-          <ul className="mt-4 space-y-2.5">
-            {supportLinks.map((label) => (
-              <li key={label}>
-                <a
-                  href="#"
-                  className="text-xs text-muted-foreground transition-colors hover:text-primary"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav aria-label="Support">
+            <h3 className="text-sm font-semibold">Support</h3>
+            <ul className="mt-4 space-y-2.5">
+              {supportLinks.map((label) => (
+                <li key={label}>
+                  <a
+                    href="#"
+                    className="text-xs text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
+        </div>
         <div>
           <h3 className="text-sm font-semibold">Stay Connected</h3>
           <p className="mt-3 text-xs leading-5 text-muted-foreground">
