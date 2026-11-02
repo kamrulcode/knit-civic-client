@@ -120,7 +120,7 @@ export async function FeaturedEvents() {
                     {joinerAvatars.map((n) => (
                       <Image
                         key={`${event._id}-${n}`}
-                        src={`/avatars/v${n}.svg`}
+                        src={`/avatars/v${n}.jpg`}
                         alt="Volunteer"
                         width={24}
                         height={24}

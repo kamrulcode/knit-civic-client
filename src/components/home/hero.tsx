@@ -88,7 +88,7 @@ export function Hero() {
               {heroAvatars.map((n) => (
                 <Image
                   key={n}
-                  src={`/avatars/v${n}.svg`}
+                  src={`/avatars/v${n}.jpg`}
                   alt="Volunteer"
                   width={36}
                   height={36}

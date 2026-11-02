@@ -10,7 +10,7 @@ const testimonials = [
       "This platform helped me find meaningful volunteer opportunities in my area. It's easy to join events and people come together for a better tomorrow.",
     name: "Ayman Rahman",
     role: "Volunteer",
-    avatarUrl: "/avatars/v6.svg",
+    avatarUrl: "/avatars/v3.jpg",
   },
   {
     id: "nusrat",
@@ -18,7 +18,7 @@ const testimonials = [
       "Joining KnitCivic was the best decision of my year. Every event feels personal, organized and truly makes a difference in our community.",
     name: "Nusrat Jahan",
     role: "Community Lead",
-    avatarUrl: "/avatars/v2.svg",
+    avatarUrl: "/avatars/v2.jpg",
   },
 ];
 

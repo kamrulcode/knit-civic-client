@@ -65,6 +65,7 @@ export default function JoinedEventsPage() {
     isPending || Boolean(userEmail && loadedRequest !== requestKey);
   const currentLoadError = loadedRequest === requestKey ? loadError : null;
 
+
   useEffect(() => {
     if (isPending || !userEmail || !requestKey) return;
 
@@ -73,9 +74,17 @@ export default function JoinedEventsPage() {
     const controller = new AbortController();
 
     async function fetchJoinedEvents() {
+      const { data: jwtData, error } = await authClient.token()
+
+      const jwtToken = jwtData?.token
+
       try {
         const res = await fetch(
-          `http://localhost:8000/join-event/${encodeURIComponent(email)}`,
+          `http://localhost:8000/join-event/${encodeURIComponent(email)}`, {
+          headers: {
+            authorization: `Bearer ${jwtToken}`
+          }
+        }
         );
 
         if (!res.ok) {
@@ -207,8 +216,8 @@ export default function JoinedEventsPage() {
                     key={filter.value}
                     onClick={() => setActiveFilter(filter.value)}
                     className={`rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 ${activeFilter === filter.value
-                        ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/10"
-                        : "border-border bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground"
+                      ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/10"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground"
                       }`}
                   >
                     {filter.label} ({filter.count})
@@ -298,8 +307,8 @@ function EventCard({
         {/* Status */}
         <span
           className={`absolute right-2 top-2 flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-bold ${isCompleted
-              ? "bg-muted text-muted-foreground"
-              : "bg-card text-emerald-600 dark:text-emerald-400"
+            ? "bg-muted text-muted-foreground"
+            : "bg-card text-emerald-600 dark:text-emerald-400"
             }`}
         >
           <CheckCircle2 size={14} />

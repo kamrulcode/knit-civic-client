@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Search, UserRoundCheck, UsersRound } from "lucide-react";
+import { CalendarPlus, Heart, Search, UserRoundCheck, UsersRound } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const steps: {
@@ -22,7 +22,7 @@ const steps: {
       number: "02",
       title: "Create Events",
       description: "Bring your ideas to life by creating events and inviting people to make a difference.",
-      icon: UserRoundCheck,
+      icon: CalendarPlus,
     },
     {
       id: "Manage Volunteers",
@@ -46,17 +46,14 @@ export function HowItWorks() {
       <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end ">
         <div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Platform Features / Works
+            How KnitCivic Works
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Everything You Need to{" "}
             <span className="text-pink-500">Make an Impact</span>
 
           </p>
-          <p className="mt-4 text-sm leading-6 text-slate-400 sm:text-base">
-            From discovering local events to managing volunteers,
-            KnitCivic makes community participation simple.
-          </p>
+
 
           <ol className="mt-10 grid gap-8 sm:grid-cols-4">
             {steps.map((step) => (
@@ -81,7 +78,7 @@ export function HowItWorks() {
         </div>
 
         {/* Handwritten accent panel */}
-        <div className="absolute hidden px-8 pb-2 lg:block right-20 top-30">
+        <div className="absolute hidden px-8 pb-2 lg:block -right-20 top-40">
           <span className="font-script text-3xl leading-tight text-foreground">
             Your
             <br />

@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const galleryImages = [
-  { src: "/images/gallery-1.svg", alt: "Volunteers planting together in a park" },
-  { src: "/images/gallery-2.svg", alt: "Hands holding a plant seedling" },
-  { src: "/images/gallery-3.svg", alt: "Group of volunteers putting hands together" },
-  { src: "/images/gallery-4.svg", alt: "Students raising hands in a classroom" },
+  { src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSABnbrkynapq7zYfqEJqEx5XaFk2qPuH0XfIFlc73Q8A&s=10", alt: "Volunteers planting together in a park" },
+  { src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY8Db6u0gFlXRMP3rVbArfMZZoUZTtw4ZU2rnDJDMKSw&s=10", alt: "Hands holding a plant seedling" },
+  { src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9AKD2HMgVIqwhRQibDKzOzytLcK5TgvfI2ZP1o_mtbQ&s=10", alt: "Group of volunteers putting hands together" },
+  { src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy-o4EH6D4TSrdZnQX-5wI4gSFp2OCPfKtdTAo9Z_WsA&s=10", alt: "Students raising hands in a classroom" },
 ];
 
 export function CommunityGallery() {
