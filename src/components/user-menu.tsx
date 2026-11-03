@@ -16,13 +16,6 @@ import {
 } from "@heroui/react";
 
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
-
-import {
   ChevronDown,
   LayoutDashboard,
   ListChecks,
@@ -86,75 +79,63 @@ export function UserMenu({ user }: { user: LoggedInUser }) {
   };
 
   return (
-    <TooltipProvider>
-      <Dropdown>
-        {/* Tooltip + Dropdown Trigger */}
-        <Tooltip>
-          <TooltipTrigger>
-            <span className="inline-flex">
-              <DropdownTrigger
-                aria-label="Open user menu"
-                className="group flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/50 p-1 pr-2 outline-none transition-colors hover:bg-card data-focus-visible:border-ring"
-              >
-                <AvatarRoot className="size-9 overflow-hidden rounded-full">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
+    <Dropdown>
+      <DropdownTrigger
+        aria-label="Open user menu"
+        className="group relative flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/50 p-1 pr-2 outline-none transition-colors hover:bg-card data-focus-visible:border-ring"
+      >
+        <AvatarRoot className="size-9 overflow-hidden rounded-full">
+          <AvatarImage src={user.image ?? undefined} alt={user.name} />
 
-                  <AvatarFallback className="flex size-full items-center justify-center bg-accent text-xs font-semibold text-accent-foreground">
-                    {initials}
-                  </AvatarFallback>
-                </AvatarRoot>
+          <AvatarFallback className="flex size-full items-center justify-center bg-accent text-xs font-semibold text-accent-foreground">
+            {initials}
+          </AvatarFallback>
+        </AvatarRoot>
+        <span className="pointer-events-none absolute -bottom-10 left-6.25 z-50 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-3 py-1.5 text-xs text-background opacity-0 shadow-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+          {user.name}
+        </span>
 
-                <ChevronDown className="size-4 text-muted-foreground transition-transform group-aria-expanded:rotate-180" />
-              </DropdownTrigger>
+        <ChevronDown className="size-4 text-muted-foreground transition-transform group-aria-expanded:rotate-180" />
+      </DropdownTrigger>
+
+      {/* Dropdown Menu */}
+      <DropdownPopover placement="bottom end">
+        <DropdownMenu className="w-60">
+          {/* User Information */}
+          <DropdownItem
+            id="account"
+            className="pointer-events-none flex-col items-start gap-0.5 opacity-100"
+          >
+            <span className="text-sm font-semibold text-foreground">
+              {user.name}
             </span>
-          </TooltipTrigger>
 
-          <TooltipContent side="bottom" sideOffset={8}>
-            <p>{user.name}</p>
-          </TooltipContent>
-        </Tooltip>
+            <span className="text-xs text-muted-foreground">{user.email}</span>
+          </DropdownItem>
 
-        {/* Dropdown Menu */}
-        <DropdownPopover placement="bottom end">
-          <DropdownMenu className="w-60">
-            {/* User Information */}
-            <DropdownItem
-              id="account"
-              className="pointer-events-none flex-col items-start gap-0.5 opacity-100"
-            >
-              <span className="text-sm font-semibold text-foreground">
-                {user.name}
-              </span>
+          <Separator className="my-1.5 bg-border" isDecorative />
 
-              <span className="text-xs text-muted-foreground">
-                {user.email}
+          {/* Navigation Links */}
+          {menuLinks.map((link) => (
+            <DropdownItem key={link.id} id={link.id} href={link.href}>
+              <span className="flex items-center gap-2.5 text-sm text-foreground/90">
+                <link.icon className="size-4 text-muted-foreground" />
+                {link.label}
               </span>
             </DropdownItem>
+          ))}
 
-            <Separator className="my-1.5 bg-border" isDecorative />
+          <Separator className="my-1.5 bg-border" isDecorative />
 
-            {/* Navigation Links */}
-            {menuLinks.map((link) => (
-              <DropdownItem key={link.id} id={link.id} href={link.href}>
-                <span className="flex items-center gap-2.5 text-sm text-foreground/90">
-                  <link.icon className="size-4 text-muted-foreground" />
-                  {link.label}
-                </span>
-              </DropdownItem>
-            ))}
-
-            <Separator className="my-1.5 bg-border" isDecorative />
-
-            {/* Logout */}
-            <DropdownItem id="logout" onClick={handleLogout}>
-              <span className="flex items-center gap-2.5 text-sm font-medium text-destructive">
-                <LogOut className="size-4" />
-                Log out
-              </span>
-            </DropdownItem>
-          </DropdownMenu>
-        </DropdownPopover>
-      </Dropdown>
-    </TooltipProvider>
+          {/* Logout */}
+          <DropdownItem id="logout" onClick={handleLogout}>
+            <span className="flex items-center gap-2.5 text-sm font-medium text-destructive">
+              <LogOut className="size-4" />
+              Log out
+            </span>
+          </DropdownItem>
+        </DropdownMenu>
+      </DropdownPopover>
+    </Dropdown>
   );
 }
