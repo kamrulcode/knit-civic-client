@@ -26,6 +26,7 @@ import {
 } from "../upcomingevents/data";
 import { FooterMain } from "@/components/layout/footer";
 import { usePathname, useSearchParams } from "next/navigation";
+import { DeleteDialog } from "@/components/DeleteDialog";
 
 const categories = [
   "All Event Types",
@@ -186,11 +187,6 @@ export default function ManageEventsPage() {
       toast.error("Please log in to manage your events.");
       return;
     }
-
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this event? This action cannot be undone.",
-    );
-    if (!confirmed) return;
 
     try {
       const { data: jwtData } = await authClient.token();
@@ -446,13 +442,7 @@ export default function ManageEventsPage() {
                         Edit
                       </Link>
 
-                      <button
-                        onClick={() => handleDelete(event.id)}
-                        className="flex h-10 items-center justify-center gap-2 rounded-xl border  text-sm font-semibold transition border-red-500/60 bg-red-500/10 text-red-500 hover:bg-red-500/40"
-                      >
-                        <Trash2 size={16} />
-                        Delete
-                      </button>
+                      <DeleteDialog handleDelete={handleDelete} id={event.id} />
                     </div>
                   </article>
                 );
