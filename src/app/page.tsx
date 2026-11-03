@@ -6,16 +6,17 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { CommunityGallery } from "@/components/home/community-gallery";
 import { Testimonials } from "@/components/home/testimonials";
 import { Newsletter } from "@/components/home/newsletter";
+import { HeadingSkeleton } from "@/components/loader/HeadingSkeleton";
 
 export default function Home() {
   return (
     <div className="min-h-svh">
       <Hero />
+
       <Stats />
       <HowItWorks />
       <FeaturedEvents />
       <EventCategories />
-
 
       {/* Inset band containing gallery, testimonials + newsletter */}
       <section className="mx-auto w-full max-w-7xl px-3 pb-16 sm:px-5">
