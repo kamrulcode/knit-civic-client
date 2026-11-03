@@ -25,6 +25,8 @@ import {
 import { CardSkeleton } from "@/components/loader/CardSkeleton";
 import { FooterMain } from "@/components/layout/footer";
 
+import UESkeleteon from "./UESkeleton";
+
 type SortOption = "newest" | "oldest";
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -299,6 +301,10 @@ export default function UpcomingEventsPage() {
       setter(value);
       setPage(1);
     };
+
+  if (isLoading) {
+    return <UESkeleteon />;
+  }
 
   return (
     <div className="min-h-svh bg-background">

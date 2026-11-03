@@ -15,10 +15,11 @@ import { Button } from "@/components/ui/button";
 import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { CardSkeleton } from "@/components/loader/CardSkeleton";
+
 import { HeadingSkeleton } from "@/components/loader/HeadingSkeleton";
 import { FooterMain } from "@/components/layout/footer";
 import { usePathname, useSearchParams } from "next/navigation";
+import JESkeleton from "./JESkeleton";
 
 type EventStatus = "upcoming" | "completed";
 
@@ -166,6 +167,10 @@ export default function JoinedEventsPage() {
     },
   ];
 
+  if (isPending) {
+    return <JESkeleton />;
+  }
+
   return (
     <>
       <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6 lg:px-12">
@@ -180,11 +185,6 @@ export default function JoinedEventsPage() {
           {isLoading ? (
             <>
               <HeadingSkeleton />
-              <div className="flex gap-5">
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-              </div>
             </>
           ) : !userEmail ? (
             <EmptyState />

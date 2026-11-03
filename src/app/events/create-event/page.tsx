@@ -17,6 +17,7 @@ import HeroPage from "@/components/events/HeroPage";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { FooterMain } from "@/components/layout/footer";
+import EventCreateSkeleton from "@/components/loader/EventsSkeleton";
 
 const eventTypes = [
   "Cleanup",
@@ -34,7 +35,7 @@ const eventInputClass =
 
 export default function CreateEventPage() {
   const router = useRouter();
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
 
   const currentUser = data?.user;
   const [formData, setFormData] = useState({
@@ -179,6 +180,10 @@ export default function CreateEventPage() {
       setLoading(false);
     }
   };
+
+  if (isPending) {
+    return <EventCreateSkeleton />;
+  }
 
   return (
     <>

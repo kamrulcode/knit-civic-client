@@ -109,13 +109,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
             email: formData.email.trim(),
             password: formData.password,
             image: formData.photoURL.trim() || undefined,
-            callbackURL: "/events/upcomingevents",
+            callbackURL: "/",
           })
         : await authClient.signIn.email({
             email: formData.email.trim(),
             password: formData.password,
             rememberMe,
-            callbackURL: "/events/upcomingevents",
+            callbackURL: "/",
           });
 
       if (error) {
@@ -141,7 +141,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         },
       );
 
-      router.replace("/events/upcomingevents");
+      router.replace("/");
     } catch (error) {
       toast.error("Authentication failed.", {
         description:
@@ -159,7 +159,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
       setSocialLoading(true);
       const { error } = await authClient.signIn.social({
         provider: "github",
-        callbackURL: "/events/upcomingevents",
+        callbackURL: "/",
       });
 
       if (error) {

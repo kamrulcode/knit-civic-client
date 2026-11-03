@@ -20,6 +20,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import ProfileSkeleton from "@/components/loader/ProfileSkeleton";
 
 type Profile = {
   name: string;
@@ -33,7 +34,7 @@ type Profile = {
 };
 
 export default function ProfilePage() {
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   const user = data?.user;
 
   const [customProfile, setCustomProfile] = useState<Partial<Profile>>({});
@@ -91,6 +92,10 @@ export default function ProfilePage() {
       [field]: value,
     }));
   };
+
+  if (isPending) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground">

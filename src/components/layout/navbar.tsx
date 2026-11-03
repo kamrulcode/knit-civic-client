@@ -28,7 +28,7 @@ export function Logo() {
         />
       </span>
 
-      <span className="text-lg font-semibold tracking-tight">
+      <span className="font-heading text-lg font-semibold tracking-tight">
         <span>
           Knit<span className="text-primary">Civic</span>
         </span>

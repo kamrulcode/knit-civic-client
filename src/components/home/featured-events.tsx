@@ -118,16 +118,20 @@ export async function FeaturedEvents() {
               <div className="mt-auto flex items-center justify-between pt-2">
                 <div className="flex items-center gap-2">
                   <div className="flex -space-x-2">
-                    {joinerAvatars.map((n) => (
-                      <Image
-                        key={`${event._id}-${n}`}
-                        src={`/avatars/v${n}.jpg`}
-                        alt="Volunteer"
-                        width={24}
-                        height={24}
-                        className="size-6 rounded-full border-2 border-card object-cover"
-                      />
-                    ))}
+                    {event.joined > 0 && (
+                      <>
+                        {Array.from({ length: event.joined }).map((_, i) => (
+                          <Image
+                            key={`${event._id}-${i}`}
+                            src={`/avatars/v${i + 1}.jpg`}
+                            alt="Volunteer"
+                            width={24}
+                            height={24}
+                            className="size-6 rounded-full border-2 border-card object-cover"
+                          />
+                        ))}
+                      </>
+                    )}
                   </div>
                   <span className="text-xs text-muted-foreground">
                     {event.joined} joined
