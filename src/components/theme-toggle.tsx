@@ -11,7 +11,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       aria-label="Toggle theme"
-      className="rounded-full border-border/60 bg-card/50"
+      className="cursor-pointer rounded-full border-border/60 bg-card/50"
       onClick={() => {
         const isDark = document.documentElement.classList.contains("dark");
         const next = isDark ? "light" : "dark";

@@ -8,7 +8,7 @@ export default function Loader({ children }: { children: React.ReactNode }) {
     // Force a 5-second artificial delay when the website starts up
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500);
+    }, 1200);
 
     return () => clearTimeout(timer);
   }, []);

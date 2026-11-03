@@ -6,20 +6,19 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { CommunityGallery } from "@/components/home/community-gallery";
 import { Testimonials } from "@/components/home/testimonials";
 import { Newsletter } from "@/components/home/newsletter";
-import { HeadingSkeleton } from "@/components/loader/HeadingSkeleton";
+import { FooterMain } from "@/components/layout/footer";
 
 export default function Home() {
   return (
     <div className="min-h-svh">
       <Hero />
-
       <Stats />
       <HowItWorks />
       <FeaturedEvents />
       <EventCategories />
 
       {/* Inset band containing gallery, testimonials + newsletter */}
-      <section className="mx-auto w-full max-w-7xl px-3 pb-16 sm:px-5">
+      <section className="mx-auto w-full max-w-6xl px-3 pb-16 sm:px-5">
         <div className="rounded-[2.5rem] bg-surface/60 py-2">
           <CommunityGallery />
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
@@ -28,6 +27,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <FooterMain />
     </div>
   );
 }

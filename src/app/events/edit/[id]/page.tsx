@@ -59,9 +59,12 @@ export default function EditEventPage() {
     async function fetchEventDetails() {
       try {
         setIsLoadingEvent(true);
-        const res = await fetch(`http://localhost:8000/events/single/${eventId}`, {
-          signal: controller.signal,
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/events/single/${eventId}`,
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!res.ok) {
           throw new Error("Could not find event details.");
@@ -132,14 +135,17 @@ export default function EditEventPage() {
         headers.authorization = `Bearer ${token}`;
       }
 
-      const res = await fetch(`http://localhost:8000/events/${eventId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({
-          ...formData,
-          updatedAt: new Date().toISOString(),
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events/${eventId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({
+            ...formData,
+            updatedAt: new Date().toISOString(),
+          }),
+        },
+      );
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));

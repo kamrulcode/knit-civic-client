@@ -23,6 +23,7 @@ import {
   type Event,
 } from "./data";
 import { CardSkeleton } from "@/components/loader/CardSkeleton";
+import { FooterMain } from "@/components/layout/footer";
 
 type SortOption = "newest" | "oldest";
 
@@ -128,8 +129,9 @@ function FilterDropdown({
                   onChange(o.value);
                   setOpen(false);
                 }}
-                className={`w-full px-4 py-2 text-left text-sm hover:bg-muted ${value === o.value ? "text-primary" : "text-foreground"
-                  }`}
+                className={`w-full px-4 py-2 text-left text-sm hover:bg-muted ${
+                  value === o.value ? "text-primary" : "text-foreground"
+                }`}
               >
                 {o.label}
               </button>
@@ -293,10 +295,10 @@ export default function UpcomingEventsPage() {
 
   const updateFilter =
     <T,>(setter: (v: T) => void) =>
-      (value: T) => {
-        setter(value);
-        setPage(1);
-      };
+    (value: T) => {
+      setter(value);
+      setPage(1);
+    };
 
   return (
     <div className="min-h-svh bg-background">
@@ -452,7 +454,6 @@ export default function UpcomingEventsPage() {
               <CardSkeleton />
               <CardSkeleton />
               <CardSkeleton />
-
             </div>
           ) : paged.length === 0 ? (
             <p className="mt-6 rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
@@ -484,7 +485,7 @@ export default function UpcomingEventsPage() {
                 aria-label="Previous page"
                 disabled={safePage === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="flex size-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+                className="flex size-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-40 cursor-pointer"
               >
                 <ChevronLeft className="size-4" />
               </button>
@@ -494,10 +495,11 @@ export default function UpcomingEventsPage() {
                   type="button"
                   aria-current={n === safePage ? "page" : undefined}
                   onClick={() => setPage(n)}
-                  className={`flex size-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${n === safePage
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-card text-foreground hover:bg-muted"
-                    }`}
+                  className={`flex size-9 items-center justify-center rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+                    n === safePage
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-card text-foreground hover:bg-muted"
+                  }`}
                 >
                   {n}
                 </button>
@@ -507,7 +509,7 @@ export default function UpcomingEventsPage() {
                 aria-label="Next page"
                 disabled={safePage === totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="flex size-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+                className="flex size-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-40 cursor-pointer"
               >
                 <ChevronRight className="size-4" />
               </button>
@@ -515,6 +517,7 @@ export default function UpcomingEventsPage() {
           )}
         </section>
       </main>
+      <FooterMain />
     </div>
   );
 }

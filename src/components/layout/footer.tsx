@@ -38,10 +38,10 @@ const socials: { id: string; label: string; path: string }[] = [
   },
 ];
 
-export function Footer() {
+export function FooterMain() {
   return (
-    <footer className="mx-auto w-full max-w-6xl">
-      <div className="grid gap-10 rounded-t-3xl border border-b-0 border-border bg-card px-6 py-12 sm:grid-cols-2 sm:px-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
+    <footer className=" border border-b-0 border-border bg-card">
+      <div className="mx-auto w-full max-w-6xl grid gap-10 rounded-t-3xl px-6 py-12 sm:grid-cols-2 sm:px-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div>
           <Logo />
           <div className="ml-12">
@@ -102,7 +102,6 @@ export function Footer() {
               ))}
             </ul>
           </nav>
-
         </div>
         <div>
           <h3 className="text-sm font-semibold">Stay Connected</h3>
@@ -132,8 +131,14 @@ export function Footer() {
           </form>
         </div>
       </div>
+    </footer>
+  );
+}
 
-      <div className="flex flex-col items-center justify-between gap-2 rounded-b-3xl border border-border bg-card px-6 py-4 text-xs text-muted-foreground sm:flex-row sm:px-10">
+export const FooterSecondary = () => {
+  return (
+    <footer className=" border-t border-border bg-card">
+      <div className="mx-auto w-full max-w-6xl flex flex-col items-center justify-between gap-2   px-6 py-4 text-xs text-muted-foreground sm:flex-row sm:px-10">
         <p>© 2026 KnitCivic. All rights reserved.</p>
         <p className="flex items-center gap-1">
           Made with <Heart className="size-3 text-primary" />
@@ -142,4 +147,4 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};

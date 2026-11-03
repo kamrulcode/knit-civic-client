@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Caveat, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-// import { Toaster } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/sonner";
 import Loader from "@/components/loader/Loader";
+import { FooterSecondary } from "@/components/layout/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main className="flex-1">{children}</main>
           {/* <Toaster /> */}
           <Toaster position="top-right" richColors />
-          <Footer />
+          <FooterSecondary />
         </Loader>
       </body>
     </html>

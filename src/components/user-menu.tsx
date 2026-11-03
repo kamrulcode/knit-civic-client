@@ -91,8 +91,48 @@ export function UserMenu({ user }: { user: LoggedInUser }) {
             {initials}
           </AvatarFallback>
         </AvatarRoot>
-        <span className="pointer-events-none absolute -bottom-10 left-6.25 z-50 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-3 py-1.5 text-xs text-background opacity-0 shadow-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+        <span
+          role="tooltip"
+          className="
+        pointer-events-none
+        absolute
+        -bottom-10
+        left-6.25
+        z-50
+        -translate-x-1/2
+        whitespace-nowrap
+        rounded-md
+        bg-foreground
+        px-3
+        py-1.5
+        text-xs
+        font-medium
+        text-background
+        opacity-0
+        shadow-md
+        transition-all
+        duration-200
+        group-hover:translate-y-0
+        group-hover:opacity-100
+        group-focus-visible:opacity-100
+        translate-y-1
+      "
+        >
           {user.name}
+
+          {/* Tooltip Arrow */}
+          <span
+            className="
+          absolute
+          left-1/2
+          bottom-5
+          size-2
+          -translate-x-1/2
+          -translate-y-1/2
+          rotate-45
+          bg-foreground
+        "
+          />
         </span>
 
         <ChevronDown className="size-4 text-muted-foreground transition-transform group-aria-expanded:rotate-180" />

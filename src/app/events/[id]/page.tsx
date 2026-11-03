@@ -2,9 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Heart, MapPin, Users } from "lucide-react";
 import JoinEventButton from "./JoinEventButton";
+import { Button } from "@/components/ui/button";
 
 type EventDetailsPageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ returnTo?: string }>;
 };
 
 type Event = {
@@ -33,11 +35,16 @@ function formatDate(date: string) {
 
 export default async function EventDetailsPage({
   params,
+  searchParams,
 }: EventDetailsPageProps) {
   const { id } = await params;
-  const response = await fetch(`http://localhost:8000/events/${id}`, {
-    cache: "no-store",
-  });
+  const { returnTo } = await searchParams;
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/events/${id}`,
+    {
+      cache: "no-store",
+    },
+  );
 
   if (response.status === 404) {
     notFound();
@@ -50,12 +57,19 @@ export default async function EventDetailsPage({
   const event: Event = await response.json();
 
   if (!event || !event._id) notFound();
+  const backUrl =
+    returnTo &&
+    returnTo.startsWith("/") &&
+    !returnTo.startsWith("//") &&
+    !returnTo.includes("\\")
+      ? returnTo
+      : "/events";
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <article className="mx-auto w-full max-w-6xl">
         <Link
-          href="/events/upcomingevents"
+          href={backUrl}
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />

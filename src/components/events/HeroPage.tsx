@@ -77,7 +77,7 @@ export default function HeroPage({
           {/* Handwritten text */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -right-8 top-2 hidden rotate-[10deg] text-center font-script text-xl leading-tight text-foreground lg:block"
+            className="pointer-events-none absolute -right-8 top-2 hidden rotate-10 text-center font-script text-xl leading-tight text-foreground lg:block"
           >
             Be a Part
             <br />

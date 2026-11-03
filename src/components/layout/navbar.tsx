@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -62,10 +62,10 @@ export function Navbar() {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
         <Logo />
 
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 md:block">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 md:block cursor-pointer">
           <Link
             href="/events/upcomingevents"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+            className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground px-2.5 py-1.5"
           >
             Upcoming Events
           </Link>
@@ -83,7 +83,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex items-center gap-2.5 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                className="hidden md:flex items-center gap-2.5 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 cursor-pointer"
               >
                 <LogOut className="size-4" />
                 Log out
@@ -92,8 +92,9 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="rounded-full bg-primary px-6 py-1.5 text-primary-foreground hover:bg-primary/90"
+              className="flex gap-2 items-center rounded-full bg-primary px-5 py-2 text-primary-foreground cursor-pointer hover:bg-primary/90"
             >
+              <LogIn className="size-4" />
               Login
             </Link>
           )}

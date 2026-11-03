@@ -23,7 +23,7 @@ type Props = {
   event: EventDetails;
 };
 
-const API_URL = "http://localhost:8000";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export default function JoinEventButton({ event }: Props) {
   const router = useRouter();
@@ -115,23 +115,23 @@ export default function JoinEventButton({ event }: Props) {
         body: JSON.stringify(
           leaving
             ? {
-              eventId: event.id,
-              userEmail: user.email,
-            }
+                eventId: event.id,
+                userEmail: user.email,
+              }
             : {
-              eventId: event.id,
-              title: event.title,
-              description: event.description,
-              date: event.date,
-              time: event.time ?? null,
-              location: event.location,
-              type: event.type,
-              image: event.image,
-              joined: true,
-              organizer: event.name ?? null,
-              name: user.name,
-              email: user.email,
-            },
+                eventId: event.id,
+                title: event.title,
+                description: event.description,
+                date: event.date,
+                time: event.time ?? null,
+                location: event.location,
+                type: event.type,
+                image: event.image,
+                joined: true,
+                organizer: event.name ?? null,
+                name: user.name,
+                email: user.email,
+              },
         ),
       });
 
@@ -140,9 +140,9 @@ export default function JoinEventButton({ event }: Props) {
       if (!res.ok) {
         throw new Error(
           data.message ??
-          (leaving
-            ? "Failed to leave the event."
-            : "Failed to join the event."),
+            (leaving
+              ? "Failed to leave the event."
+              : "Failed to join the event."),
         );
       }
 
@@ -150,9 +150,9 @@ export default function JoinEventButton({ event }: Props) {
 
       toast.success(
         data.message ??
-        (leaving
-          ? "You have left the event."
-          : "You have successfully joined the event."),
+          (leaving
+            ? "You have left the event."
+            : "You have successfully joined the event."),
       );
 
       router.refresh();

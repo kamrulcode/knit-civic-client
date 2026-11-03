@@ -17,6 +17,8 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { CardSkeleton } from "@/components/loader/CardSkeleton";
 import { HeadingSkeleton } from "@/components/loader/HeadingSkeleton";
+import { FooterMain } from "@/components/layout/footer";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type EventStatus = "upcoming" | "completed";
 
@@ -90,7 +92,7 @@ export default function JoinedEventsPage() {
         }
 
         const res = await fetch(
-          `http://localhost:8000/join-event/${encodeURIComponent(email)}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/join-event/${encodeURIComponent(email)}`,
           {
             signal: controller.signal,
             headers,
@@ -165,124 +167,132 @@ export default function JoinedEventsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6 lg:px-12">
-      <HeroPage
-        title="Your Joined"
-        highlight="Events"
-        badge="Together We Can"
-        description="Explore the events you've joined, stay connected with your community, and make a meaningful difference."
-        image="/images/joinevents.png"
-      />
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        {isLoading ? (
-          <>
-            <HeadingSkeleton />
-            <div className="flex gap-5">
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
-            </div>
-          </>
-        ) : !userEmail ? (
-          <EmptyState />
-        ) : currentLoadError ? (
-          <div
-            role="alert"
-            className="rounded-2xl border border-destructive/30 bg-card px-5 py-16 text-center"
-          >
-            <p className="text-sm text-destructive">{currentLoadError}</p>
-            <button
-              type="button"
-              onClick={() => setRetryCount((count) => count + 1)}
-              className="mt-5 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+    <>
+      <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6 lg:px-12">
+        <HeroPage
+          title="Your Joined"
+          highlight="Events"
+          badge="Together We Can"
+          description="Explore the events you've joined, stay connected with your community, and make a meaningful difference."
+          image="/images/joinevents.png"
+        />
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          {isLoading ? (
+            <>
+              <HeadingSkeleton />
+              <div className="flex gap-5">
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+              </div>
+            </>
+          ) : !userEmail ? (
+            <EmptyState />
+          ) : currentLoadError ? (
+            <div
+              role="alert"
+              className="rounded-2xl border border-destructive/30 bg-card px-5 py-16 text-center"
             >
-              Try again
-            </button>
-          </div>
-        ) : events.length === 0 ? (
-          /* EMPTY STATE */
-          <EmptyState />
-        ) : (
-          <>
-            {/* PAGE HEADER */}
-            <div className="mb-7">
-              <div className="flex items-center gap-3">
-                <CalendarCheck size={26} className="text-primary" />
-
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                  Your Joined Events
-                </h1>
-              </div>
-
-              <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-                Here are the events you&apos;ve joined and are participating in.
-              </p>
+              <p className="text-sm text-destructive">{currentLoadError}</p>
+              <button
+                type="button"
+                onClick={() => setRetryCount((count) => count + 1)}
+                className="mt-5 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                Try again
+              </button>
             </div>
+          ) : events.length === 0 ? (
+            /* EMPTY STATE */
+            <EmptyState />
+          ) : (
+            <>
+              {/* PAGE HEADER */}
+              <div className="mb-7">
+                <div className="flex items-center gap-3">
+                  <CalendarCheck size={26} className="text-primary" />
 
-            {/* FILTERS AND SORT */}
-            <div className="mb-7 flex flex-col justify-between gap-5 xl:flex-row xl:items-center">
-              {/* Filter tabs */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                {filters.map((filter) => (
-                  <button
-                    key={filter.value}
-                    onClick={() => setActiveFilter(filter.value)}
-                    className={`rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 ${
-                      activeFilter === filter.value
-                        ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/10"
-                        : "border-border bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground"
-                    }`}
-                  >
-                    {filter.label} ({filter.count})
-                  </button>
-                ))}
-              </div>
+                  <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                    Your Joined Events
+                  </h1>
+                </div>
 
-              {/* Sorting */}
-              <div className="flex items-center gap-3">
-                <label
-                  htmlFor="event-sort"
-                  className="shrink-0 text-sm font-semibold text-muted-foreground"
-                >
-                  Sort by:
-                </label>
-
-                <select
-                  id="event-sort"
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  className="h-12 w-full min-w-50 rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-primary"
-                >
-                  <option value="soonest">Event Date (Soonest)</option>
-                  <option value="latest">Event Date (Latest)</option>
-                </select>
-              </div>
-            </div>
-
-            {/* EVENT GRID */}
-            {filteredEvents.length === 0 ? (
-              <div className="rounded-2xl border border-border bg-card px-5 py-16 text-center">
-                <CalendarHeart size={48} className="mx-auto text-primary" />
-
-                <h2 className="mt-5 text-xl font-bold">
-                  No {activeFilter} events
-                </h2>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Try selecting another category to see your joined events.
+                <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+                  Here are the events you&apos;ve joined and are participating
+                  in.
                 </p>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {filteredEvents.map((event, index) => (
-                  <EventCard key={event._id} event={event} wide={index >= 4} />
-                ))}
+
+              {/* FILTERS AND SORT */}
+              <div className="mb-7 flex flex-col justify-between gap-5 xl:flex-row xl:items-center">
+                {/* Filter tabs */}
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {filters.map((filter) => (
+                    <button
+                      key={filter.value}
+                      onClick={() => setActiveFilter(filter.value)}
+                      className={`rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 ${
+                        activeFilter === filter.value
+                          ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/10"
+                          : "border-border bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground"
+                      }`}
+                    >
+                      {filter.label} ({filter.count})
+                    </button>
+                  ))}
+                </div>
+
+                {/* Sorting */}
+                <div className="flex items-center gap-3">
+                  <label
+                    htmlFor="event-sort"
+                    className="shrink-0 text-sm font-semibold text-muted-foreground"
+                  >
+                    Sort by:
+                  </label>
+
+                  <select
+                    id="event-sort"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="h-12 w-full min-w-50 rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-primary"
+                  >
+                    <option value="soonest">Event Date (Soonest)</option>
+                    <option value="latest">Event Date (Latest)</option>
+                  </select>
+                </div>
               </div>
-            )}
-          </>
-        )}
-      </div>
-    </main>
+
+              {/* EVENT GRID */}
+              {filteredEvents.length === 0 ? (
+                <div className="rounded-2xl border border-border bg-card px-5 py-16 text-center">
+                  <CalendarHeart size={48} className="mx-auto text-primary" />
+
+                  <h2 className="mt-5 text-xl font-bold">
+                    No {activeFilter} events
+                  </h2>
+
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Try selecting another category to see your joined events.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                  {filteredEvents.map((event, index) => (
+                    <EventCard
+                      key={event._id}
+                      event={event}
+                      wide={index >= 4}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </main>
+      <FooterMain />
+    </>
   );
 }
 
@@ -295,6 +305,16 @@ function EventCard({
   wide?: boolean;
 }) {
   const isCompleted = event.status === "completed";
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentUrl = searchParams.toString()
+    ? `${pathname}?${searchParams.toString()}`
+    : pathname;
+
+  const detailsUrl = `/events/${event.eventId}?returnTo=${encodeURIComponent(
+    currentUrl,
+  )}`;
 
   return (
     <article
@@ -365,7 +385,7 @@ function EventCard({
 
           {event.eventId ? (
             <Link
-              href={`/events/${encodeURIComponent(event.eventId)}`}
+              href={detailsUrl}
               className="inline-flex h-11 shrink-0 items-center justify-center gap-1 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
             >
               View Details
@@ -411,7 +431,7 @@ function EmptyState() {
         </p>
 
         <Button className="mt-5 h-14.5 rounded-xl bg-primary px-7 text-base font-bold text-primary-foreground transition hover:bg-primary/90">
-          <Link href="/events">
+          <Link href="/events" className="flex items-center gap-2">
             Explore Events
             <ArrowRight size={19} className="ml-2" />
           </Link>

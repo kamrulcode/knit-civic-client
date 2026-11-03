@@ -20,11 +20,11 @@ export function Hero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute left-6 top-24 hidden size-14 rotate-45 rounded-2xl bg-gradient-to-br from-pink-400 to-fuchsia-600 opacity-70 lg:block"
+        className="pointer-events-none absolute left-6 top-24 hidden size-14 rotate-45 rounded-2xl bg-linear-to-br from-pink-400 to-fuchsia-600 opacity-70 lg:block"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-4 left-4 hidden size-10 rotate-12 rounded-xl bg-gradient-to-br from-pink-400 to-fuchsia-600 opacity-70 lg:block"
+        className="pointer-events-none absolute bottom-4 left-4 hidden size-10 rotate-12 rounded-xl bg-linear-to-br from-pink-400 to-fuchsia-600 opacity-70 lg:block"
       />
       <div
         aria-hidden
@@ -50,7 +50,7 @@ export function Hero() {
 
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:py-20">
         <div>
-          <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/30">
+          <span className="inline-flex items-center rounded-full  px-4 py-1.5 text-xs font-semibold text-foreground shadow-lg shadow-primary/30 border border-primary">
             Together We Can
           </span>
 
@@ -65,18 +65,18 @@ export function Hero() {
             that help build a better, stronger and more compassionate society.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <div className="mt-7 flex flex-wrap items-center gap-3 ">
             <Button
               size="lg"
-              className="rounded-full px-6 shadow-lg shadow-primary/30 group"
+              className="rounded-full px-6 py-5 shadow-lg shadow-primary/30 group"
             >
               Explore Events
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 cursor-pointer" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full border-border bg-transparent px-6 hover:bg-muted"
+              className="rounded-full border border-slate-400  px-6 py-5 hover:bg-muted cursor-pointer"
             >
               Create Event
             </Button>
@@ -107,11 +107,11 @@ export function Hero() {
         <div className="relative mx-auto w-full max-w-md lg:max-w-lg">
           <div
             aria-hidden
-            className="absolute -left-10 top-1/2 -z-10 size-24 -translate-y-1/2 bg-gradient-to-br from-pink-400 to-fuchsia-600 opacity-80 [border-radius:45%_55%_60%_40%/55%_45%_55%_45%]"
+            className="absolute -left-10 top-1/2 -z-10 size-24 -translate-y-1/2 bg-linear-to-br from-pink-400 to-fuchsia-600 opacity-80 rounded-[45%_55%_60%_40%/55%_45%_55%_45%]"
           />
           <div
             aria-hidden
-            className="absolute -right-6 bottom-10 -z-10 size-16 bg-gradient-to-br from-blue-400 to-indigo-600 opacity-80 [border-radius:55%_45%_40%_60%/55%_55%_45%_45%]"
+            className="absolute -right-6 bottom-10 -z-10 size-16 bg-linear-to-br from-blue-400 to-indigo-600 opacity-80 rounded-[55%_45%_40%_60%/55%_55%_45%_45%]"
           />
           {/* <div className="overflow-hidden rounded-[12%_38%_32%_18%/30%_20%_28%_40%]">
             <Image

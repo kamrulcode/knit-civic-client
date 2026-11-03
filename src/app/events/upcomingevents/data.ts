@@ -1,6 +1,5 @@
 import { authClient } from "@/lib/auth-client";
 
-
 export type EventCategoryId =
   | "plantation"
   | "donation"
@@ -28,19 +27,19 @@ export const eventCategories: {
   label: string;
   badgeClass: string;
 }[] = [
-    {
-      id: "plantation",
-      label: "Plantation",
-      badgeClass: "bg-emerald-500 text-white",
-    },
-    { id: "donation", label: "Donation", badgeClass: "bg-red-400 text-white" },
-    { id: "cleanup", label: "Cleanup", badgeClass: "bg-sky-400 text-white" },
-    {
-      id: "education",
-      label: "Education",
-      badgeClass: "bg-violet-400 text-white",
-    },
-  ];
+  {
+    id: "plantation",
+    label: "Plantation",
+    badgeClass: "bg-emerald-500 text-white",
+  },
+  { id: "donation", label: "Donation", badgeClass: "bg-red-400 text-white" },
+  { id: "cleanup", label: "Cleanup", badgeClass: "bg-sky-400 text-white" },
+  {
+    id: "education",
+    label: "Education",
+    badgeClass: "bg-violet-400 text-white",
+  },
+];
 
 export const categoryById = new Map(
   eventCategories.map((category) => [category.id, category]),
@@ -59,7 +58,7 @@ export function getEventCategoryId(type: string): EventCategoryId | undefined {
   return categoryAliases[type.trim().toLowerCase()];
 }
 
-const EVENTS_URL = "http://localhost:8000/events";
+const EVENTS_URL = `${process.env.NEXT_PUBLIC_API_URL}/events`;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -142,14 +141,11 @@ export async function fetchEventsByEmail(
     headers.authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(
-    `${EVENTS_URL}/${encodeURIComponent(email)}`,
-    {
-      signal,
-      cache: "no-store",
-      headers,
-    },
-  );
+  const response = await fetch(`${EVENTS_URL}/${encodeURIComponent(email)}`, {
+    signal,
+    cache: "no-store",
+    headers,
+  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -173,10 +169,13 @@ export async function fetchEventById(
   signal?: AbortSignal,
 ): Promise<Event | undefined> {
   try {
-    const response = await fetch(`${EVENTS_URL}/single/${encodeURIComponent(id)}`, {
-      signal,
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${EVENTS_URL}/single/${encodeURIComponent(id)}`,
+      {
+        signal,
+        cache: "no-store",
+      },
+    );
     if (response.ok) {
       const data: unknown = await response.json();
       return parseEvent(data);

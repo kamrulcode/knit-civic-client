@@ -1,5 +1,3 @@
-
-
 import Image from "next/image";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { cn } from "cn";
@@ -57,11 +55,13 @@ interface RecentEvents {
 const joinerAvatars = [1, 6, 7, 8];
 
 export async function FeaturedEvents() {
-
-  const res = await fetch('http://localhost:8000/recentevents')
-  const featuredEvents: RecentEvents[] = await res.json()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recentevents`);
+  const featuredEvents: RecentEvents[] = await res.json();
   return (
-    <section id="upcoming-events" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+    <section
+      id="upcoming-events"
+      className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6"
+    >
       <div className="flex items-end justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -72,7 +72,7 @@ export async function FeaturedEvents() {
           </p>
         </div>
         <a
-          href="#upcoming-events"
+          href="/events/upcomingevents"
           className="group flex shrink-0 items-center gap-1 text-sm font-medium text-primary"
         >
           View All
@@ -92,7 +92,7 @@ export async function FeaturedEvents() {
                 alt={event.title}
                 width={640}
                 height={420}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="aspect-4/3 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <span
                 className={cn(
@@ -134,7 +134,7 @@ export async function FeaturedEvents() {
                 </div>
 
                 <a
-                  href="#"
+                  href={`/events/${event._id}`}
                   aria-label={`Join ${event.title}`}
                   className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-110"
                 >

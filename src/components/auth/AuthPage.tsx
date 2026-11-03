@@ -74,8 +74,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
     if (!formData.password) {
       newErrors.password = "Password is required.";
     } else if (isRegister) {
-      if (formData.password.length < 8) {
-        newErrors.password = "Password must be at least 8 characters long.";
+      if (formData.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters long.";
       } else if (!/[A-Z]/.test(formData.password)) {
         newErrors.password = "Password must contain an uppercase letter.";
       } else if (!/[a-z]/.test(formData.password)) {
@@ -468,7 +468,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             {/* Password requirements */}
             {isRegister && (
               <p className="text-xs text-muted-foreground">
-                Use at least 8 characters, including one uppercase and one
+                Use at least 6 characters, including one uppercase and one
                 lowercase letter.
               </p>
             )}
@@ -487,7 +487,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <button
                   type="button"
                   onClick={() => router.push("/forgot-password")}
-                  className="text-xs font-semibold text-primary hover:opacity-80"
+                  className="text-xs font-semibold text-primary hover:opacity-80 cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -533,7 +533,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             <button
               type="button"
               onClick={() => router.push(isRegister ? "/login" : "/register")}
-              className="font-semibold text-primary hover:opacity-80"
+              className="font-semibold text-primary hover:opacity-80 cursor-pointer text-sm"
             >
               {isRegister ? "Log in" : "Create an account"}
             </button>
