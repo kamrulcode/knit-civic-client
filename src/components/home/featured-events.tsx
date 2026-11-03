@@ -68,7 +68,8 @@ export async function FeaturedEvents() {
             Recent Upcoming Events
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Join upcoming events and be a part of something meaningful.
+            Join upcoming events and be a part of{" "}
+            <span className="text-pink-500">something meaningful</span>.
           </p>
         </div>
         <a

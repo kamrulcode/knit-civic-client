@@ -41,8 +41,12 @@ export default function ProfilePage() {
   const profile: Profile = {
     name: customProfile.name ?? user?.name ?? "Community Member",
     email: customProfile.email ?? user?.email ?? "",
-    image: customProfile.image ?? user?.image ?? "https://i.pravatar.cc/150?img=12",
-    photoURL: customProfile.photoURL ?? user?.image ?? "https://i.pravatar.cc/150?img=12",
+    image:
+      customProfile.image ?? user?.image ?? "https://i.pravatar.cc/150?img=12",
+    photoURL:
+      customProfile.photoURL ??
+      user?.image ??
+      "https://i.pravatar.cc/150?img=12",
     phone: customProfile.phone ?? "",
     location: customProfile.location ?? "",
     website: customProfile.website ?? "",
@@ -107,18 +111,30 @@ export default function ProfilePage() {
         {/* Profile hero card */}
 
         {/* TWO COLUMN PROFILE LAYOUT */}
-        <section className="grid grid-cols-2 items-start gap-6 lg:grid-cols-5">
+        <section className="grid grid-cols-1 items-start gap-6 lg:grid-cols-5">
           {/* LEFT: MY ACCOUNT / PROFILE */}
           <div className="overflow-hidden rounded-2xl border border-border bg-card lg:col-span-2">
             {/* Profile banner */}
             <div className="relative h-32 bg-linear-to-r from-primary/20 via-primary/10 to-card">
               <div className="absolute -right-10 -top-20 h-48 w-48 rounded-full bg-[#ff397e]/15 blur-3xl" />
 
-              <div className="absolute left-6 top-5">
-                <p className="text-xs font-semibold uppercase tracking-[2px] text-primary">
-                  MY ACCOUNT / PROFILE
-                </p>
-                <h2 className="mt-2 text-xl font-bold">Personal Information</h2>
+              <div>
+                <div className="absolute left-6 top-5">
+                  <p className="sm:text-xs text-[10px] font-semibold uppercase tracking-[2px] text-primary">
+                    MY ACCOUNT / PROFILE
+                  </p>
+                  <h2 className="mt-2 sm:text-xl text-lg font-bold">
+                    Personal Information
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEdit}
+                  className="inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 absolute right-6 top-5 text-sm cursor-pointer"
+                >
+                  <Edit3 size={16} />
+                  <span className="hidden md:block">Edit Profile</span>
+                </button>
               </div>
             </div>
 
@@ -133,15 +149,6 @@ export default function ProfilePage() {
                   />
                   <span className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[#191d36] bg-[#7bdcb5]" />
                 </div>
-
-                <button
-                  type="button"
-                  onClick={handleEdit}
-                  className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90"
-                >
-                  <Edit3 size={16} />
-                  Edit Profile
-                </button>
               </div>
 
               {/* Name */}
@@ -160,7 +167,9 @@ export default function ProfilePage() {
                 </p>
 
                 <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  {profile.bio ? profile.bio : "No bio provided. Add a short description about yourself."}
+                  {profile.bio
+                    ? profile.bio
+                    : "No bio provided. Add a short description about yourself."}
                 </p>
               </div>
 
@@ -241,7 +250,7 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="space-y-4 flex  gap-5">
+            <div className="space-y-4   gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {/* Saved events */}
               <div className="group rounded-2xl border border-border bg-background p-5 transition hover:border-primary/60">
                 <div className="flex items-center justify-between">
@@ -325,7 +334,7 @@ export default function ProfilePage() {
 
           <Link
             href="/events/upcomingevents"
-            className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-6 font-semibold text-primary-foreground"
+            className="inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-6 font-semibold text-primary-foreground text-sm justify-center"
           >
             <ArrowUpRight size={18} />
             Explore Events
@@ -335,8 +344,8 @@ export default function ProfilePage() {
 
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-          <div className="my-auto w-full max-w-[560px] rounded-2xl border border-border bg-card p-6 shadow-2xl md:p-8">
+        <div className="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
+          <div className="my-auto w-full max-w-140 rounded-2xl border border-border bg-card p-6 shadow-2xl md:p-8">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold">Edit Profile</h2>
@@ -347,7 +356,7 @@ export default function ProfilePage() {
 
               <button
                 onClick={handleCancel}
-                className="rounded-lg bg-muted p-2 text-muted-foreground hover:text-foreground"
+                className="rounded-lg bg-muted p-2 text-slate-100"
                 aria-label="Close edit profile"
               >
                 <X size={20} />
@@ -384,34 +393,35 @@ export default function ProfilePage() {
                 type="email"
               />
 
-              <EditInput
-                label="Photo URL"
-                value={editData.photoURL ?? ""}
-                onChange={(v) => updateField("photoURL", v)}
-                placeholder="https://example.com/photo.jpg"
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <EditInput
+                  label="Photo URL"
+                  value={editData.photoURL ?? ""}
+                  onChange={(v) => updateField("photoURL", v)}
+                  placeholder="https://example.com/photo.jpg"
+                />
 
-              <EditInput
-                label="Phone number"
-                value={editData.phone ?? ""}
-                onChange={(v) => updateField("phone", v)}
-                placeholder="Enter phone number"
-              />
+                <EditInput
+                  label="Phone number"
+                  value={editData.phone ?? ""}
+                  onChange={(v) => updateField("phone", v)}
+                  placeholder="Enter phone number"
+                />
 
-              <EditInput
-                label="Location"
-                value={editData.location ?? ""}
-                onChange={(v) => updateField("location", v)}
-                placeholder="Your location"
-              />
+                <EditInput
+                  label="Location"
+                  value={editData.location ?? ""}
+                  onChange={(v) => updateField("location", v)}
+                  placeholder="Your location"
+                />
 
-              <EditInput
-                label="Website"
-                value={editData.website ?? ""}
-                onChange={(v) => updateField("website", v)}
-                placeholder="Your website URL"
-              />
-
+                <EditInput
+                  label="Website"
+                  value={editData.website ?? ""}
+                  onChange={(v) => updateField("website", v)}
+                  placeholder="Your website URL"
+                />
+              </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold">
                   About me
@@ -430,7 +440,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="h-11 rounded-xl border border-border px-4 text-foreground hover:bg-muted"
+                className="h-10 text-sm rounded-xl border border-border px-4 text-foreground hover:bg-muted"
               >
                 Cancel
               </button>
@@ -438,7 +448,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={handleSave}
-                className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 font-semibold text-primary-foreground"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-6 text-sm justify-center font-semibold text-primary-foreground"
               >
                 <Check size={17} />
                 Save Changes
@@ -469,7 +479,7 @@ function InfoItem({
 
       <div className="min-w-0">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="mt-1 break-words text-sm font-medium text-foreground">
+        <p className="mt-1 wrap-break-word text-sm font-medium text-foreground">
           {value}
         </p>
       </div>

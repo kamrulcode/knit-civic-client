@@ -39,7 +39,8 @@ export function CommunityGallery() {
             Community Gallery
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Moments that inspire. People who care.
+            Moments that<span className="text-pink-500"> inspire</span>. People
+            who care.
           </p>
           <Button className="group mt-6 rounded-full px-5 py-5 shadow-lg shadow-primary/30">
             View Gallery

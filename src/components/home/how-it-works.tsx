@@ -1,6 +1,12 @@
 "use client";
 
-import { CalendarPlus, Heart, Search, UserRoundCheck, UsersRound } from "lucide-react";
+import {
+  CalendarPlus,
+  Heart,
+  Search,
+  UserRoundCheck,
+  UsersRound,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const steps: {
@@ -10,35 +16,39 @@ const steps: {
   description: string;
   icon: LucideIcon;
 }[] = [
-    {
-      id: "discover",
-      number: "01",
-      title: "Discover Events",
-      description: "Find donation drives, cleanups, education programs, and community activities near you.",
-      icon: Search,
-    },
-    {
-      id: "join",
-      number: "02",
-      title: "Create Events",
-      description: "Bring your ideas to life by creating events and inviting people to make a difference.",
-      icon: CalendarPlus,
-    },
-    {
-      id: "Manage Volunteers",
-      number: "03",
-      title: "Manage Volunteers",
-      description: "Join events, manage your registrations, and connect with people who share your passion.",
-      icon: UsersRound,
-    },
-    {
-      id: "Make an Impact",
-      number: "04",
-      title: "Make an Impact",
-      description: "Participate in meaningful initiatives and help build a more caring community.",
-      icon: Heart,
-    },
-  ];
+  {
+    id: "discover",
+    number: "01",
+    title: "Discover Events",
+    description:
+      "Find donation drives, cleanups, education programs, and community activities near you.",
+    icon: Search,
+  },
+  {
+    id: "join",
+    number: "02",
+    title: "Create Events",
+    description:
+      "Bring your ideas to life by creating events and inviting people to make a difference.",
+    icon: CalendarPlus,
+  },
+  {
+    id: "Manage Volunteers",
+    number: "03",
+    title: "Manage Volunteers",
+    description:
+      "Join events, manage your registrations, and connect with people who share your passion.",
+    icon: UsersRound,
+  },
+  {
+    id: "Make an Impact",
+    number: "04",
+    title: "Make an Impact",
+    description:
+      "Participate in meaningful initiatives and help build a more caring community.",
+    icon: Heart,
+  },
+];
 
 export function HowItWorks() {
   return (
@@ -46,14 +56,12 @@ export function HowItWorks() {
       <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end ">
         <div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            How KnitCivic Works
+            KnitCivic Features
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Everything You Need to{" "}
             <span className="text-pink-500">Make an Impact</span>
-
           </p>
-
 
           <ol className="mt-10 grid gap-8 sm:grid-cols-4">
             {steps.map((step) => (
@@ -66,7 +74,9 @@ export function HowItWorks() {
                   />
                 </span>
                 <div>
-                  <p className="text-xs font-semibold text-primary">{step.number}</p>
+                  <p className="text-xs font-semibold text-primary">
+                    {step.number}
+                  </p>
                   <h3 className="mt-1 font-semibold">{step.title}</h3>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
                     {step.description}

@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowRight, GraduationCap, Leaf, Trash2, HandHeart } from "lucide-react";
+import {
+  ArrowRight,
+  GraduationCap,
+  Leaf,
+  Trash2,
+  HandHeart,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const categories: {
@@ -52,7 +58,9 @@ export function EventCategories() {
         Explore Event Categories
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Find events that match your passion and make a difference.
+        Find events that match
+        <span className="text-pink-500"> your passion</span> and make a
+        difference.
       </p>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

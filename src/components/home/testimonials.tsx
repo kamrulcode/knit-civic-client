@@ -25,8 +25,12 @@ const testimonials = [
 export function Testimonials() {
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">What People Say</h2>
-      <p className="-mt-4 text-sm text-muted-foreground">Real stories. Real impact.</p>
+      <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        What People Say
+      </h2>
+      <p className="-mt-4 text-sm text-muted-foreground">
+        Real stories.<span className="text-pink-500"> Real impact.</span>
+      </p>
 
       <div className="relative rounded-3xl border border-border bg-card p-6">
         <Quote
@@ -49,7 +53,9 @@ export function Testimonials() {
             />
             <div>
               <p className="text-sm font-semibold">{testimonials[0].name}</p>
-              <p className="text-xs text-muted-foreground">{testimonials[0].role}</p>
+              <p className="text-xs text-muted-foreground">
+                {testimonials[0].role}
+              </p>
             </div>
           </div>
 
