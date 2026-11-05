@@ -15,10 +15,12 @@ import {
 
 export function DeleteDialog({
   handleDelete,
+  title,
   id,
 }: {
   handleDelete: (id: string) => void;
   id: string;
+  title: string;
 }) {
   return (
     <AlertDialog>
@@ -35,10 +37,10 @@ export function DeleteDialog({
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete chat?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This will permanently delete this chat conversation. View{" "}
-            <a href="#">Settings</a> delete any memories saved during this chat.
+          <AlertDialogTitle>Delete Event?</AlertDialogTitle>
+          <AlertDialogDescription className="text-center">
+            This will permanently delete <br />
+            <span className="font-semibold text-primary">{title}</span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

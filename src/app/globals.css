@@ -373,3 +373,86 @@
     animation: none !important;
   }
 }
+
+/* count down  */
+
+.flip-clock {
+  position: relative;
+  width: 64px;
+  height: 54px;
+  border-radius: 10px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.flip-static,
+.flip-half {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--card-foreground));
+  background: hsl(var(--card));
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.flip-clock::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: hsl(var(--border));
+  pointer-events: none;
+}
+
+/* Old number moves DOWN immediately */
+.flip-out {
+  z-index: 2;
+  animation: number-out 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* New number enters from TOP immediately */
+.flip-in {
+  z-index: 3;
+  transform: translateY(-100%);
+  animation: number-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes number-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes number-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-out,
+  .flip-in {
+    animation: none;
+  }
+}

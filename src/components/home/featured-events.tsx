@@ -3,39 +3,6 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import { cn } from "cn";
 import { ReactNode } from "react";
 
-// const featuredEvents = [
-//   {
-//     id: "winter-clothes",
-//     title: "Winter Clothes Distribution",
-//     tag: "Donation",
-//     tagClass: "bg-primary text-primary-foreground",
-//     date: "Dec 14, 2026",
-//     location: "Khulna, Bangladesh",
-//     joined: 45,
-//     image: "/images/event-donation.svg",
-//   },
-//   {
-//     id: "tree-plantation",
-//     title: "Tree Plantation Drive",
-//     tag: "Plantation",
-//     tagClass: "bg-emerald-500 text-white",
-//     date: "Jan 18, 2027",
-//     location: "Dhaka, Bangladesh",
-//     joined: 78,
-//     image: "/images/event-plantation.svg",
-//   },
-//   {
-//     id: "clean-neighbourhood",
-//     title: "Clean Our Neighbourhood",
-//     tag: "Cleanup",
-//     tagClass: "bg-blue-500 text-white",
-//     date: "Feb 20, 2027",
-//     location: "Chittagong, Bangladesh",
-//     joined: 32,
-//     image: "/images/event-cleanup.svg",
-//   },
-// ];
-
 interface RecentEvents {
   tag?: ReactNode;
   tagClass?: string;
@@ -52,11 +19,12 @@ interface RecentEvents {
   joined: number;
 }
 
-const joinerAvatars = [1, 6, 7, 8];
-
 export async function FeaturedEvents() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recentevents`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recentevents`, {
+    cache: "no-store",
+  });
   const featuredEvents: RecentEvents[] = await res.json();
+  console.log(featuredEvents);
   return (
     <section
       id="upcoming-events"

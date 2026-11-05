@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Heart, MapPin, Users } from "lucide-react";
 import JoinEventButton from "./JoinEventButton";
 import { Button } from "@/components/ui/button";
+import Countdown from "@/components/events/Countdown";
 
 type EventDetailsPageProps = {
   params: Promise<{ id: string }>;
@@ -68,13 +69,17 @@ export default async function EventDetailsPage({
   return (
     <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <article className="mx-auto w-full max-w-6xl">
-        <Link
-          href={backUrl}
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          Back to your events
-        </Link>
+        <div className="mb-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <Link
+            href={backUrl}
+            className="inline-flex w-fit items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-4" />
+            Back to your events
+          </Link>
+
+          <Countdown eventDate={event.date} />
+        </div>
 
         <div className="grid overflow-hidden rounded-3xl border border-border bg-card lg:grid-cols-2">
           <div className="relative min-h-72 overflow-hidden bg-muted sm:min-h-96">

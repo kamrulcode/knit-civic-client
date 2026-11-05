@@ -27,6 +27,7 @@ import {
 import { FooterMain } from "@/components/layout/footer";
 import { usePathname, useSearchParams } from "next/navigation";
 import { DeleteDialog } from "@/components/DeleteDialog";
+import MESkeleton from "./MESkeleton";
 
 const categories = [
   "All Event Types",
@@ -228,6 +229,9 @@ export default function ManageEventsPage() {
       );
     }
   };
+  if (isPending) {
+    return <MESkeleton />;
+  }
 
   return (
     <>
@@ -442,7 +446,11 @@ export default function ManageEventsPage() {
                         Edit
                       </Link>
 
-                      <DeleteDialog handleDelete={handleDelete} id={event.id} />
+                      <DeleteDialog
+                        handleDelete={handleDelete}
+                        id={event.id}
+                        title={event.title}
+                      />
                     </div>
                   </article>
                 );

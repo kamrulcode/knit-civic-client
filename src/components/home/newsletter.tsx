@@ -19,12 +19,12 @@ export function Newsletter() {
         Subscribe to Our Newsletter
       </h2>
       <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-        Get updated on our latest initiatives, events, and opportunities to
-        make a difference.
+        Get updated on our latest initiatives, events, and opportunities to make
+        a difference.
       </p>
 
       <form
-        className="mt-6 flex items-center gap-2"
+        className="mt-6 flex items-center flex-wrap gap-2"
         onSubmit={(event) => {
           event.preventDefault();
           // Hook up to your API later.
@@ -38,7 +38,10 @@ export function Newsletter() {
           aria-label="Your email address"
           className="max-w-64 rounded-full"
         />
-        <Button type="submit" className="rounded-full px-5 shadow-lg shadow-primary/30">
+        <Button
+          type="submit"
+          className="rounded-full px-5 shadow-lg shadow-primary/30"
+        >
           Subscribe
           <Send className="size-4" />
         </Button>
