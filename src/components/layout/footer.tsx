@@ -65,7 +65,7 @@ export function FooterMain() {
                   href={social.link}
                   target="_blank"
                   aria-label={social.label}
-                  className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="flex size-9 items-center justify-center rounded-full border bg-primary-foreground text-primary hover:bg-primary/20 border-border shadow-lg shadow-primary/30  transition-colors "
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -153,7 +153,7 @@ export const FooterSecondary = () => {
         <p>© 2026 KnitCivic. All rights reserved.</p>
         <p className="flex items-center gap-1">
           Made with <Heart className="size-3 text-primary" />
-          <Link href="https://github.com/kamrulcode">by Kamrul Islam</Link>
+          <Link href="https://kamruliislam.netlify.app">by Kamrul Islam</Link>
         </p>
       </div>
     </footer>
