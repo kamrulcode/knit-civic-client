@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3 } from "lucide-react";
+import { CalendarX, Clock3 } from "lucide-react";
 
 interface CountdownProps {
   eventDate: string;
@@ -41,7 +41,7 @@ function AnimatedTimeUnit({ value, label }: TimeUnitProps) {
   }, [formattedValue, displayed]);
 
   return (
-    <div className="flex min-w-[64px] flex-col items-center gap-1.5">
+    <div className="flex min-w-16 flex-col items-center gap-1.5">
       <div className="flip-clock">
         {!flipping ? (
           <div className="flip-static">{displayed}</div>
@@ -76,10 +76,13 @@ export default function Countdown({ eventDate }: CountdownProps) {
   };
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
     const updateCountdown = () => {
-      setTimeLeft(calculateTimeLeft());
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+      setIsStarted(remaining === null);
     };
 
     updateCountdown();
@@ -88,6 +91,17 @@ export default function Countdown({ eventDate }: CountdownProps) {
 
     return () => clearInterval(timer);
   }, [eventDate]);
+
+  // Event date has passed
+  if (isStarted) {
+    return (
+      <div className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5">
+        <CalendarX className="size-4 text-red-500" />
+
+        <span className="text-sm font-semibold text-red-500">Event Ended</span>
+      </div>
+    );
+  }
 
   if (!timeLeft) {
     return (

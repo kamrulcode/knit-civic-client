@@ -3,12 +3,14 @@
 import Image from "next/image";
 import { ArrowRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EventMarquee from "./EventMarquee";
 
 const heroAvatars = [1, 2, 3, 4, 5];
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
+      <EventMarquee />
       {/* Decorative glows + shapes */}
       <div
         aria-hidden
@@ -20,7 +22,10 @@ export function Hero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute left-6 top-24 hidden size-14 rotate-45 rounded-2xl bg-linear-to-br from-pink-400 to-fuchsia-600 opacity-70 lg:block"
+        className="pointer-events-none absolute left-6 top-24 hidden
+size-14 rotate-45 rounded-2xl
+bg-linear-to-br from-pink-400 to-fuchsia-600
+opacity-70 lg:block"
       />
       <div
         aria-hidden
@@ -68,9 +73,11 @@ export function Hero() {
           <div className="mt-7 flex flex-wrap items-center gap-3 ">
             <Button
               size="lg"
-              className="rounded-full px-6 py-5 shadow-lg shadow-primary/30 group"
+              className="rounded-full px-6 py-5 shadow-lg shadow-primary/30 group flex gap-3"
             >
-              Explore Events
+              <a href="/events/upcomingevents" className="flex gap-3">
+                Explore Events
+              </a>
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 cursor-pointer" />
             </Button>
             <Button
@@ -78,7 +85,7 @@ export function Hero() {
               variant="outline"
               className="rounded-full border border-slate-400  px-6 py-5 hover:bg-muted cursor-pointer"
             >
-              Create Event
+              <a href="/events/create-event">Create Event</a>
             </Button>
           </div>
 
